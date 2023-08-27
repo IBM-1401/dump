@@ -1,0 +1,697 @@
+ CLEAR STORAGE 1     ,008015,022026,030037,044,049,053053N000000N00001026                                         1
+ CLEAR STORAGE 2     L068116,105106,110117B101/I9I#071029C029056B026/B001/0991,001/001117I0?                      2
+ BOOTSTRAP           ,008015,022029,036040,047054,061068,072/061039              ,0010011040                      3
+0                          CARD 1 OF CORE DUMP ROUTINE                                                    PAGE    1
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  101                JOB   CARD 1 OF CORE DUMP ROUTINE
+  102         * SET WORD MARKS FOR THE SECOND CARD
+  103                ORG   1                                                                  0001
+  104                SW    A1,A2                                                    7  0001  , 008 015            4
+  105         A1     SW    A3,A4                                                    7  0008  , 023 030            4
+  106         A2     NOP   0,0,0                                                    8  0015  N 000 000 0          4
+  107         A3     SW    A5,A6                                                    7  0023  , 038 042            4
+  108         A4     NOP   0,0,0                                                    8  0030  N 000 000 0          4
+  109         A5     SW    A7                                                       4  0038  , 049                5
+  110         A6     SW    A8,A9                                                    7  0042  , 053 057            5
+  111         A7     SW    A10                                                      4  0049  , 059                5
+  112         A8     SW    A11                                                      4  0053  , 063                5
+  113         A9        N0                                                          2  0057  N 0                  5
+  114         A10    SW    A12                                                      4  0059  , 067                5
+  115         A11    SW    A13                                                      4  0063  , 071                5
+  116         A12    R     BLOOP            READ THE NEXT CARD                      4  0067  1 001                6
+  117         A13    DCW   #1                                                       1  0071                       6
+1                          CARD 2 OF CORE DUMP ROUTINE                                                    PAGE    2
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  118                JOB   CARD 2 OF CORE DUMP ROUTINE
+  119         * REPLACE GROUP MARKS IN 81-399 BY ).
+  120                ORG   1                                                                  0001
+  121         BLOOP  MCW   BADDR,BTESTG&6   SET TEST ADDRESS                        7  0001  M 055 021            7
+  122                MCW   BADDR,BREPLG&6   SET REPLACEMENT ADDR                    7  0008  M 055 048            7
+  123         BTESTG BCE   BREPLG,5777&X1,}  GROUP MARK? (B REPLACED)               8  0015  B 042 XXX } GMARK    7
+  124         BBUMP  A     BINCR,BADDR      UPDATE TEST ADDRESS                     7  0023  A 067 055            7
+  125                BCE   BDONE,BADDR-2,4  DONE WITH SCAN?                         8  0030  B 057 053 4          7
+  126                B     BLOOP            AROUND AGAIN                            4  0038  B 001                8
+  127         BREPLG MCW   BLOZ,5777&X1     REPLACE GROUP MARK (B REPLACED)         7  0042  M 071 XXX            8
+  128                B     BBUMP            UPDATE TEST ADDRESS                     4  0049  B 023                8
+  129         BADDR  DCW   @081@                                                    3  0055                       8
+  130                DC    @ @                                                      1  0056                       8
+  131         BDONE  CC    K                SKIP TWO LINES                          2  0057  F K                  8
+  132                CS    *-3              NEED NEW WORD MARKS                     4  0059  / 059                8
+  133                SW    CSTART           READY FOR A NEW CARD                    4  0063  , 001                8
+  134         BINCR  R     CSTART           READ A NEW CARD                         4  0067  1 001                9
+  135         BLOZ   DCW   @)@              LOZENGE ON THE  A  CHAIN                1  0071                       9
+1                          CARD 3 OF CORE DUMP ROUTINE                                                    PAGE    3
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  136                JOB   CARD 3 OF CORE DUMP ROUTINE
+  137         * SET WORD MARKS FOR THE NEXT CARD, PRINT THE PRINT
+  138         * AREA, THEN PRINT THE WORD MARKS.
+  139                ORG   1                                                                  0001
+  140         CSTART SW    C1,C2                                                    7  0001  , 008 012           10
+  141         C1     SW    C3                                                       4  0008  , 016               10
+  142         C2     SW    C4                                                       4  0012  , 023               10
+  143         C3     SW    C5,C6                                                    7  0016  , 030 034           10
+  144         C4     SW    C7,C8                                                    7  0023  , 041 048           10
+  145         C5     SW    C9                                                       4  0030  , 049               10
+  146         C6     SW    C10,C11                                                  7  0034  , 056 063           11
+  147         C7     SW    DLOAD,C14                                                7  0041  , 022 072           11
+  148         C8     SW                                                             1  0048  ,                   11
+  149         C9     SW    C15,C16                                                  7  0049  , 074 076           11
+  150         C10    SW    C17,C12                                                  7  0056  , 080 067           11
+  151         C11    CW    C4                                                       4  0063  ) 023               11
+  152         C12    SW    DLOAD2                                                   4  0067  , 029               11
+  153         C13    W                                                              1  0071  2                   12
+  154         C14       2)                                                          2  0072  2 )                 12
+  155         C15       N0                                                          2  0074  N 0                 12
+  156         C16    R     DSTART                                                   4  0076  1 012               12
+  157         C17    NOP                                                            1  0080  N                   12
+1                          CARD 4 OF CORE DUMP ROUTINE                                                    PAGE    4
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  158                JOB   CARD 4 OF CORE DUMP ROUTINE
+  159         * CLEAR 300-332 TO MAKE SURE 330 ISN'T A ZERO.  FILL
+  160         * IN THE DOTS AND NUMBERS 210-330, PRINT THEM.
+  161                ORG   1                                                                  0001
+  162                DCW   @.......@                                                7  0007                      13
+  163         DNUM   DCW   @210@                                                    3  0010                      13
+  164                DC    #1                                                       1  0011                      13
+  165         DSTART CS    332              ENSURE 330 IS NOT @0@                   4  0012  / 332               13
+  166                   N0 0                                                        5  0016  N 000 0             13
+  167                NOP                                                            1  0021  N                   13
+  168         DLOAD  LCA   DNUM,210         LOAD NUM TO PRINT                       7  0022  L 010 210           13
+  169         DLOAD2 LCA                    LOAD DOTS                               1  0029  L                   13
+  170                CW    C8                                                       4  0030  ) 048               14
+  171                A     DREAD&1,DNUM     ADD 10 T0 NUM                           7  0034  A 077 010           14
+  172                BCE   DDONE,330,0      DONE?                                   8  0041  B 067 330 0         14
+  173                A     DREAD&1,DLOAD&6  ADD 10 TO LOAD PLACE                    7  0049  A 077 028           14
+  174                LCA   2,332            LAST TWO DOTS TO PRINT                  7  0056  L 002 332           14
+  175                B     DLOAD            AROUND AGAIN                            4  0063  B 022               14
+  176         DDONE  CW    DLOAD2                                                   4  0067  ) 029               15
+  177                W                                                              1  0071  2                   15
+  178                   N0                                                          2  0072  N 0                 15
+  179                CC    J                SKIP ONE LINE                           2  0074  F J                 15
+  180         DREAD  R     ESTART           READ THE NEXT CARD                      4  0076  1 012               15
+  181                DCW   #1                                                       1  0080                      15
+1                          CARD 5 OF CORE DUMP ROUTINE                                                    PAGE    5
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  182                JOB   CARD 5 OF CORE DUMP ROUTINE
+  183         * CLEAR 300-332. REMEMBER WHETHER 101 HAD A WORD MARK.
+  184         * SET ONE SO WE CAN LOAD FROM 101 UPWARD.  LOAD 101-200
+  185         * AND ITS WORD MARKS TO 201-300.  CLEAR (OR DON'T
+  186         * CLEAR) THE WORD MARK IN 201.  PRINT.  PRINT WORD MARKS.
+  187                ORG   1                                                                  0001
+  188         EHAVWM MCW   ENOP,ECW         CHANGE CW TO NOP                        7  0001  M 080 067           16
+  189                B     ELOOP                                                    4  0008  B 034               16
+  190         ESTART SW    E1                                                       4  0012  , 017               16
+  191                NOP                                                            1  0016  N                   16
+  192         E1     CS    332                                                      4  0017  / 332               16
+  193                NOP                                                            1  0021  N                   16
+  194                BW    EHAVWM,101       WM IN 101?                              8  0022  V 001 101 1         16
+  195                SW    101              NO, SET ONE                             4  0030  , 101               17
+  196         ELOOP  LCA   101,201          LOAD TO PRINT AREA                      7  0034  L 101 201           17
+  197                BCE   ECW,ELOOP&4,3    STORING AT 300 YET?                     8  0041  B 067 038 3         17
+  198                A     EREAD,ELOOP&3    UPDATE FROM ADDRESS                     7  0049  A 076 037           17
+  199                A     EREAD,ELOOP&6    UPDATE TO ADDRESS                       7  0056  A 076 040           17
+  200                B     ELOOP            NO                                      4  0063  B 034               17
+  201         ECW    CW    201              OR MAYBE NOT                            4  0067  ) 201               18
+  202                W                                                              1  0071  2                   18
+  203                   2)                  PRINT THE WORD MARKS                    2  0072  2 )                 18
+  204                   N0                                                          2  0074  N 0                 18
+  205         EREAD  R     FSTART           READ THE NEXT CARD                      4  0076  1 012               18
+  206         ENOP   NOP                                                            1  0080  N                   18
+1                          CARD 6 OF CORE DUMP ROUTINE                                                    PAGE    6
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  207                JOB   CARD 6 OF CORE DUMP ROUTINE
+  208         * CLEAR 300 TO MAKE SURE IT ISN'T ZERO.  FILL IN THE
+  209         * DOTS AND NUMBERS 110-200.  PRINT THEM.
+  210                ORG   1                                                                  0001
+  211                DCW   @.......@                                                7  0007                      19
+  212         FNUM   DCW   @110@                                                    3  0010                      19
+  213                DC    #1                                                       1  0011                      19
+  214         FSTART CS    300              ENSURE 300 ISN'T 0                      4  0012  / 300               19
+  215                NOP                                                            1  0016  N                   19
+  216                SW    FLOAD2                                                   4  0017  , 029               19
+  217                NOP                                                            1  0021  N                   19
+  218         FLOAD  LCA   FNUM,210         LOAD NUM TO PRINT                       7  0022  L 010 210           19
+  219         FLOAD2 LCA                    LOAD THE DOTS                           1  0029  L                   20
+  220                NOP   0                                                        4  0030  N 000               20
+  221                A     FREAD&1,FNUM     ADD 10 T0 NUM                           7  0034  A 077 010           20
+  222                BCE   FDONE,300,0      DONE?                                   8  0041  B 067 300 0         20
+  223                A     FREAD&1,FLOAD&6  ADD 10 TO LOAD PLACE                    7  0049  A 077 028           20
+  224                NOP   0,0                                                      7  0056  N 000 000           20
+  225                B     FLOAD            AROUND AGAIN                            4  0063  B 022               20
+  226         FDONE  CW    FLOAD2                                                   4  0067  ) 029               21
+  227                W                                                              1  0071  2                   21
+  228                   N0                                                          2  0072  N 0                 21
+  229                CC    J                SKIP ONE LINE                           2  0074  F J                 21
+  230         FREAD  R     GSTART           READ THE NEXT CARD                      4  0076  1 017               21
+  231                NOP                                                            1  0080  N                   21
+1                          CARD 7 OF CORE DUMP ROUTINE                                                    PAGE    7
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  232                JOB   CARD 7 OF CORE DUMP ROUTINE
+  233         * CLEAR 300.  REMEMBER WHETHER 81 HAD A WORD MARK.  SET
+  234         * ONE.  LOAD 81-99 AND ITS WORD MARKS TO 281-299.
+  235         * CLEAR (OR DON'T CLEAR) THE WORD MARK IN 281.  PRINT.
+  236         * PRINT WORD MARKS.
+  237                ORG   1                                                                  0001
+  238         GHAVWM MCW   GNOP,GCW         CHANGE CW TO NOP                        7  0001  M 080 067           22
+  239                B     GLOOP                                                    4  0008  B 034               22
+  240                DCW   #4                                                       4  0015                      22
+  241                DCW   #1                                                       1  0016                      22
+  242         GSTART CS    300                                                      4  0017  / 300               22
+  243                CS                                                             1  0021  /                   22
+  244                BW    GHAVWM,81        WM IN 81?                               8  0022  V 001 081 1         22
+  245                SW    81               NO, SET ONE                             4  0030  , 081               23
+  246         GLOOP  LCA   81,201           LOAD TO PRINT AREA                      7  0034  L 081 201           23
+  247                BCE   GCW,GLOOP&4,3    STORING AT 300 YET?                     8  0041  B 067 038 3         23
+  248                A     GREAD,GLOOP&3    UPDATE FROM ADDRESS                     7  0049  A 076 037           23
+  249                A     GREAD,GLOOP&6    UPDATE TO ADDRESS                       7  0056  A 076 040           23
+  250                B     GLOOP            NO                                      4  0063  B 034               23
+  251         GCW    CW    281              OR MAYBE NOT                            4  0067  ) 281               24
+  252                W                                                              1  0071  2                   24
+  253                   2)                  PRINT THE WORD MARKS                    2  0072  2 )                 24
+  254                   N0                                                          2  0074  N 0                 24
+  255         GREAD  R     HSTART           READ THE NEXT CARD                      4  0076  1 030               24
+  256         GNOP   NOP                                                            1  0080  N                   24
+1                          CARD 8 OF CORE DUMP ROUTINE                                                    PAGE    8
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  257                JOB   CARD 8 OF CORE DUMP ROUTINE
+  258         * LOAD INDEX REGISTER IDENTIFICATION TO 281-300.
+  259                ORG   1                                                                  0001
+  260         HDOTS  DCW   @......*@                                                7  0007                      25
+  261         HINDX1 DCW   @1*..@                                                   4  0011                      25
+  262                DCW   @*2*.@                                                   4  0015                      25
+  263         H1     DCW   @.@                                                      1  0016                      25
+  264         HINDX  DCW   @*3*.@                                                   4  0020                      25
+  265                DC    #1                                                       1  0021                      25
+  266         H2     DCW   #1                                                       1  0022                      25
+  267         H3     DC    #7                                                       7  0029                      25
+  268         HSTART SW    H4                                                       4  0030  , 048               25
+  269                CW    HDOTS&1,HINDX&1                                          7  0034  ) 008 021           26
+  270                CW    H2,H1&1                                                  7  0041  ) 022 017           26
+  271         H4     CW                                                             1  0048  )                   26
+  272                LCA   HINDX,300        MOVE XR ID TO 300                       7  0049  L 020 300           26
+  273                SW    H1,H2&1                                                  7  0056  , 016 023           26
+  274                R     ISTART           READ THE NEXT CARD                      4  0063  1 049               26
+  275                DCW   #4                                                       4  0070                      26
+  276                DCW   #1                                                       1  0071                      27
+  277                DCW   #2                                                       2  0073                      27
+  278                DCW   #2                                                       2  0075                      27
+  279                DCW   #4                                                       4  0079                      27
+  280                DCW   #1                                                       1  0080                      27
+1                          CARD 9 OF CORE DUMP ROUTINE                                                    PAGE    9
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  281                JOB   CARD 9 OF CORE DUMP ROUTINE
+  282         * LOAD SENSE SWITCH IDENTIFIERS TO 201-234.
+  283                ORG   1                                                                  0001
+  284         ISSTXT DCW   @SENSE SWS   ON@                                        14  0014                      28
+  285                DC    #1                                                       1  0015                      28
+  286                DCW   #7                                                       7  0022                      28
+  287                DCW   #7                                                       7  0029                      28
+  288         IOFF   DCW   @OFF@                                                    3  0032                      28
+  289                DC    #1                                                       1  0033                      28
+  290                DCW   #7                                                       7  0040                      29
+  291                DCW   #7                                                       7  0047                      29
+  292                DCW   #1                                                       1  0048                      29
+  293         ISTART LCA   ISSTXT,214       LOAD SS ON TEXT TO 214                  7  0049  L 014 214           29
+  294                LCA   IOFF,234         LOAD SS OFF                             7  0056  L 032 234           29
+  295                CW    C15                                                      4  0063  ) 074               29
+  296                CW    C12                                                      4  0067  ) 067               29
+  297                NOP                                                            1  0071  N                   30
+  298                SW    JSTART                                                   4  0072  , 011               30
+  299                R     JSTART           READ THE NEXT CARD                      4  0076  1 011               30
+  300                DCW   #1                                                       1  0080                      30
+1                          CARD 10 OF CORE DUMP ROUTINE                                                   PAGE   10
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  301                JOB   CARD 10 OF CORE DUMP ROUTINE
+  302         * PUT LIST OF ON AND OFF SENSE SWITCHES IN 236... (ON)
+  303         * OR 216... (OFF).
+  304                ORG   1                                                                  0001
+  305         JTWO   DCW   2                                                        1  0001                      31
+  306                DC    #9                                                       9  0010                      31
+  307         JSTART BSS   JON,B            SWITCH ON?                              5  0011  B 034 B             31
+  308         JOFF   M     JB,236           NO, MOVE SS ID TO OFF                   7  0016  @ 080 236           31
+  309                A     JTWO,JOFF&6      INCR OFF ID SPOT                        7  0023  A 001 022           31
+  310                B     JBOTH                                                    4  0030  B 049               31
+  311         JON    M     JB,216           YES, MOVE SS ID TO ON                   7  0034  @ 080 216           32
+  312                A     JTWO,JON&6                                               7  0041  A 001 040           32
+  313                NOP                                                            1  0048  N                   32
+  314         JBOTH  A     JREAD,JSTART&4   INCR SWITCH TEST                        7  0049  A 076 015           32
+  315                A     JREAD,JB         INCR SS ID                              7  0056  A 076 080           32
+  316                BCE   JREAD,JB,H       DONE?                                   8  0063  B 076 080 H         32
+  317                NOP                                                            1  0071  N                   32
+  318                B     JSTART           AROUND AGAIN                            4  0072  B 011               33
+  319         JREAD  R     KSTART           READ THE NEXT CARD                      4  0076  1 034               33
+  320         JB     DCW   @B@              SS ID TO PRINT                          1  0080                      33
+1                          CARD 11 OF CORE DUMP ROUTINE                                                   PAGE   11
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  321                JOB   CARD 11 OF CORE DUMP ROUTINE
+  322         * SAVE COMPARISON INDICATORS IN 100..125.
+  323                ORG   1                                                                  0001
+  324         KUNEQ  DCW   @   UNEQUAL@                                            10  0010                      34
+  325         KEQUAL DCW   @EQUAL@                                                  5  0015                      34
+  326         KHIGH  DCW   @ HIGH@                                                  5  0020                      34
+  327                DC    #2                                                       2  0022                      34
+  328         KLOW   DCW   @LOW@                                                    3  0025                      34
+  329                DC    #4                                                       4  0029                      34
+  330                DCW   #4                                                       4  0033                      34
+  331         KSTART LCA   KUNEQ,110        SAVE  UNEQUAL                           7  0034  L 010 110           35
+  332                LCA   KEQUAL,115       SAVE  EQUAL                             7  0041  L 015 115           35
+  333                NOP                                                            1  0048  N                   35
+  334                LCA   KHIGH,120        SAVE  HIGH                              7  0049  L 020 120           35
+  335                LCA   KLOW,125         SAVE  LOW                               7  0056  L 025 125           35
+  336                NOP   0,0,0                                                    8  0063  N 000 000 0         35
+  337                NOP                                                            1  0071  N                   35
+  338                NOP   0                                                        4  0072  N 000               36
+  339                R     LSTART                                                   4  0076  1 011               36
+  340                DCW   #1                                                       1  0080                      36
+1                          CARD 12 OF CORE DUMP ROUTINE                                                   PAGE   12
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  341                JOB   CARD 12 OF CORE DUMP ROUTINE
+  342         * MOVE APPROPRIATE COMPARISON INDICATORS TO 247..265.
+  343                ORG   1                                                                  0001
+  344         LINC   DCW   5003             INC FOR TWO ADDRS                       4  0004                      37
+  345                DC    #6                                                       6  0010                      37
+  346         LSTART BU    LINDON           INDICATOR ON?                           5  0011  B 041 /             37
+  347                NOP   0,0                                                      7  0016  N 000 000           37
+  348                NOP   0,0                                                      7  0023  N 000 000           37
+  349                B     LINDOF           NO                                      4  0030  B 049               37
+  350                DCW   #7                                                       7  0040                      38
+  351         LINDON MCW   110,256          MOVE INDICATOR TO PR                    7  0041  M 110 256           38
+  352                NOP                                                            1  0048  N                   38
+  353         LINDOF A     LREAD,LSTART&4   INCR INDICATOR TEST                     7  0049  A 076 015           38
+  354                A     LINC,LINDON&6    INCR BOTH ADDRS                         7  0056  A 004 047           38
+  355                BCE   LREAD,LSTART&4,V  DONE?                                  8  0063  B 076 015 V         38
+  356                NOP                                                            1  0071  N                   38
+  357                B     LSTART           AROUND AGAIN                            4  0072  B 011               39
+  358         LREAD  R     MSTART           READ THE NEXT CARD                      4  0076  1 011               39
+  359                DCW   #1                                                       1  0080                      39
+1                          CARD 13 OF CORE DUMP ROUTINE                                                   PAGE   13
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  360                JOB   CARD 13 OF CORE DUMP ROUTINE
+  361         * CONSTRUCT OVERFLOW OFF (OR ON) INDICATOR.
+  362         * MOVE IT TO 268..277.
+  363                ORG   1                                                                  0001
+  364         MOVFF  DCW   @OVFLO OFF@                                              9  0009                      40
+  365                DC    #1                                                       1  0010                      40
+  366         MSTART BAV   MOVFL            OVERFLOW?                               5  0011  B 041 Z             40
+  367         MOVON  DCW   @N @             NOP, AND  N  FOR MSG                    2  0017                      40
+  368                DC    @00000@          REST OF THE NOP INSTR                   5  0022                      40
+  369                NOP   0,0                                                      7  0023  N 000 000           40
+  370                B     MOVFON                                                   4  0030  B 049               40
+  371                DCW   #7                                                       7  0040                      41
+  372         MOVFL  MCW   MOVON,MOVFF      CHANGE  OFF  TO  ON                     7  0041  M 017 009           41
+  373                NOP                                                            1  0048  N                   41
+  374         MOVFON MCW   MOVFF,277        MOVE MSG TO PRINT AREA                  7  0049  M 009 277           41
+  375                NOP   0,0                                                      7  0056  N 000 000           41
+  376                NOP   0,0,0                                                    8  0063  N 000 000 0         41
+  377                NOP                                                            1  0071  N                   41
+  378                NOP   0                                                        4  0072  N 000               42
+  379                R     NSTART                                                   4  0076  1 034               42
+  380                DCW   #1                                                       1  0080                      42
+1                          CARD 14 OF CORE DUMP ROUTINE                                                   PAGE   14
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  381                JOB   CARD 14 OF CORE DUMP ROUTINE
+  382         * MOVE CLEAR ROUTINES FOR 200-299 AND 0-80 TO
+  383         * 101-116.  PRINT INDICATORS. CLEAR 200-299 AND 0-80.
+  384         * SET WORD MARK IN 1, READ A CARD AND BRANCH TO 1.
+  385                ORG   1                                                                  0001
+  386                DCW   @/299/080,0@     CLEAR STORAGE ROUTINE                  10  0010                      43
+  387                DCW   @01100@          SEE SOURCE CODE BELOW                   5  0015                      43
+  388         NCLEAR DCW   @1@                                                      1  0016                      43
+  389                DC    #6                                                       6  0022                      43
+  390                DCW   #7                                                       7  0029                      43
+  391                DCW   #4                                                       4  0033                      43
+  392         NSTART SW    N1,N2                                                    7  0034  , 067 074           44
+  393                CW    JSTART,NCLEAR                                            7  0041  ) 011 016           44
+  394                CW                                                             1  0048  )                   44
+  395                LCA   NCLEAR,NCLEND-1                                          7  0049  L 016 116           44
+  396                SW    NCLEND,NCL3                                              7  0056  , 117 113           44
+  397                SW    NCL2                                                     4  0063  , 109               44
+  398         N1     SW    NCL1                                                     4  0067  , 105               44
+  399                W                                                              1  0071  2                   45
+  400                CC    L                SKIP THREE LINES                        2  0072  F L                 45
+  401         N2     CC    K                SKIP TWO LINES                          2  0074  F K                 45
+  402                B     NCLBEG                                                   4  0076  B 101               45
+  403                DCW   #1                                                       1  0080                      45
+  404         * ROUTINE TO CLEAR 200-299 AND 0-80, THEN SET A WORD
+  405         * MARK AT 1, READ A CARD AND BRANCH TO 1.  THE TEXT OF
+  406         * THIS ROUTINE IS PUNCHED IN CC 1-16 OF CARD N.
+  407                ORG   101                                                                0101
+  408         NCLBEG CS    299                                                      4  0101  / 299               46
+  409         NCL1   CS    80                                                       4  0105  / 080               46
+  410         NCL2   SW    1                                                        4  0109  , 001               46
+  411         NCL3   R     OSTART                                                   4  0113  1 001               46
+  412         NCLEND DCW   #1                                                       1  0117                      46
+1                          MOVE DATA AND WORD MARKS TO PRINT AREA                                         PAGE   15
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  413                JOB   MOVE DATA AND WORD MARKS TO PRINT AREA
+  414         * ROUTINE TO MOVE DATA AND WORD MARKS TO PRINT AREA.
+  415         * CONVERT GROUP MARKS TO ).
+  416         * READ A CARD WHEN DONE.
+  417                ORG   78                                                                 0078
+  418         DWSTRT BU    WSTART                                                   5  0078  B 001 /             47
+  419         DW1    B     SWITCH                                                   4  0083  B 168               47
+  420         X1     DCW   @X00@                                                    3  0089                      47
+  421         DFF    DCW   @FF@                                                     2  0091                      47
+  422         X2     DCW   333                                                      3  0094                      47
+  423         DW3    DCW   01                                                       2  0096                      47
+  424         X3     DC    033                                                      3  0099                      47
+  425         DWPRNT W                                                              1  0100  2                   47
+  426         DW5    CS    332                                                      4  0101  / 332               48
+  427                CS                                                             1  0105  /                   48
+  428         DWLOOP SW    212&X3           ASSUME DATA HAS WM                      4  0106  , 2A2               48
+  429         DW7    MCW   0&X2,212&X3      MOVE THE DATA                           7  0110  M 0!0 2A2           48
+  430         DW8    BW    GOTWM,0&X2       DID IT HAVE WM?                         8  0117  V 129 0!0 1         48
+  431         LOZ    CW    212&X3           NO, CLEAR ASSUMED WM                    4  0125  ) 2A2               48
+  432         GOTWM  BCE   GOTGM,0&X3,}     GROUP MARK?                             8  0129  B 141 0?0 } GMARK   48
+  433         DW9    B     NOGM             NO                                      4  0137  B 148               49
+  434         GOTGM  MCW   LOZ,212&X3       REPL GROUP MARK WITH )                  7  0141  M 125 2A2           49
+  435         NOGM   A     DWREAD,X3        BUMP X3                                 7  0148  A 176 099           49
+  436                A                      BUMP X2 -- MA FOR BIG CORE              1  0155  A                   49
+  437         DW12   BCE   DWLOOP,X3-2,0    AROUND AGAIN                            8  0156  B 106 097 0         49
+  438                CW    DWSTRT           CHANGED LATER TO W 060                  4  0164  ) 078               49
+  439         SWITCH NOP   080              CHANGED TO N OR /                       4  0168  N 080               49
+  440         DW14   SW    PSTART                                                   4  0172  , 001               50
+  441         DWREAD R     PSTART           READ THE NEXT CARD                      4  0176  1 001               50
+  442         DWDOTS DCW   @........@                                               8  0187                      50
+  443         DWLOW  DCW   49               LOW ORDER TWO DIGITS                    2  0189                      50
+  444         DWBEGN DCW   00333            BEGIN OF LINE                           5  0194                      50
+  445         DWAREA DC    @-AREA @                                                 6  0200                      50
+1                          CARD 15 OF CORE DUMP ROUTINE                                                   PAGE   16
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  446                JOB   CARD 15 OF CORE DUMP ROUTINE
+  447         * SET WORD MARKS, MOVE SOME CODE TO 164-200.
+  448                ORG   1                                                                  0001
+  449         OSTART SW    O1,O2                                                    7  0001  , 008 015           51
+  450         O1     SW    O3,O4                                                    7  0008  , 022 023           51
+  451         O2     SW    O5,O6                                                    7  0015  , 027 031           51
+  452         O3     NOP                                                            1  0022  N                   51
+  453         O4     SW    O7                                                       4  0023  , 038               51
+  454         O5     SW    O8                                                       4  0027  , 042               51
+  455         O6     LCA   O9,DWAREA                                                7  0031  L 078 200           51
+  456         O7     R     PSTART                                                   4  0038  1 001               52
+  457         O8     DCW   @)@              CW JUST BEFORE SWITCH                   1  0042                      52
+  458         O9     DC    @078N080,0011001........4900333-AREA @                  36  0078                      53
+1                          CARD 16 OF CORE DUMP ROUTINE                                                   PAGE   17
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  459                JOB   CARD 16 OF CORE DUMP ROUTINE
+  460         * MOVE SOME CODE TO 125-163, SET SOME WORD MARKS.
+  461                ORG   1                                                                  0001
+  462         PSTART LCA   P1,DW12&7                                                7  0001  L 080 163           54
+  463                SW    DWBEGN-4,DWLOW-1                                         7  0008  , 190 188           54
+  464                SW    DW12,DW12                                                7  0015  , 156 156           54
+  465                SW                                                             1  0022  ,                   54
+  466                SW    DWDOTS-7                                                 4  0023  , 180               54
+  467                SW    DWREAD                                                   4  0027  , 176               54
+  468                SW    DW14,SWITCH                                              7  0031  , 172 168           54
+  469                R     QSTART                                                   4  0038  1 001               55
+  470                DCW   @)2A2B1410!0}B148M1252A2A176099A@                       31  0072                      55
+  471         P1     DC    @B1060970@                                               8  0080                      56
+1                          CARD 17 OF CORE DUMP ROUTINE                                                   PAGE   18
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  472                JOB   CARD 17 OF CORE DUMP ROUTINE
+  473         * MOVE SOME CODE TO 87-124, SET SOME WORD MARKS.
+  474                ORG   1                                                                  0001
+  475         QSTART LCA   Q1,DW8&7                                                 7  0001  L 079 124           57
+  476                SW    NOGM,GOTGM                                               7  0008  , 148 141           57
+  477                SW    DW5,DWLOOP                                               7  0015  , 101 106           57
+  478                SW                                                             1  0022  ,                   57
+  479                SW    DW9                                                      4  0023  , 137               57
+  480                SW    GOTWM                                                    4  0027  , 129               57
+  481                SW    DW8,DW7                                                  7  0031  , 117 110           57
+  482                R     RSTART                                                   4  0038  1 001               58
+  483                DCW   @X00FF333010332/332/,2A2M0!02A2@                        30  0071                      58
+  484         Q1     DC    @V1290!01@                                               8  0079                      59
+1                          CARD 18 OF CORE DUMP ROUTINE                                                   PAGE   19
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  485                JOB   CARD 18 OF CORE DUMP ROUTINE
+  486         * SET SOME WORD MARKS, MOVE SOME CODE TO 78-86
+  487         * (ACTUALLY PART OF AN INSTRUCTION)
+  488                ORG   1                                                                  0001
+  489         RSTART SW    R1,SDONE                                                 7  0001  , 045 049           60
+  490                SW    S1,SLOW-6                                                7  0008  , 056 060           60
+  491                LCA   R5,DW1&3                                                 7  0015  L 068 086           60
+  492                NOP                                                            1  0022  N                   60
+  493                CW    O8                                                       4  0023  ) 042               60
+  494                CW    O5                                                       4  0027  ) 027               60
+  495                SW    X2&1,X2-2                                                7  0031  , 095 092           60
+  496                SW    X1&1,DW1                                                 7  0038  , 090 083           61
+  497         R1     R     SSTART                                                   4  0045  1 001               61
+  498                DCW   #11                                                     11  0059                      61
+  499         R5     DCW   @   1/B168@                                              9  0068                      61
+1                          CARD 19 OF CORE DUMP ROUTINE                                                   PAGE   20
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  500                JOB   CARD 19 OF CORE DUMP ROUTINE
+  501         * MOVE "00333-AREA " WITH ZERO SUPPRESSION TO
+  502         * 201-211.  UPDATE "XXXXX-AREA " TO 00400.  PUT
+  503         * .....39 - ........99 IN PRINT AREA.  GO TO PRINT IT
+  504         * AND TO SET UP TO PRINT 333-399 AREA.
+  505                ORG   1                                                                  0001
+  506         SSTART MCS   DWAREA,211                                               7  0001  Z 200 211           62
+  507                MCW   SADDR,DWBEGN     REPLACE 333 WITH 400                    7  0008  M 071 194           62
+  508         SLOOP  LCA   DWLOW,261        FIRST DOTS OFFSET 49                    7  0015  L 189 261           62
+  509                LCA                    MOVE THE DOTS                           1  0022  L                   62
+  510                BCE   SDONE,DWLOW-1,9  DONE FILLING DOTS?                      8  0023  B 049 188 9         62
+  511                A     DWREAD,DWLOW-1   BUMP DOTS ADDR BY 10                    7  0031  A 176 188           62
+  512                A     DWREAD,SLOOP&5   BUMP DOTS POINT BY 10                   7  0038  A 176 020           63
+  513                B     SLOOP            AROUND AGAIN                            4  0045  B 015               63
+  514         SDONE  LCA   SLOW,251         PUT ......39 IN PRINT                   7  0049  L 066 251           63
+  515         S1     B     DWPRNT           GO PRINT IT                             4  0056  B 100               63
+  516         SLOW   DCW   @.....39@                                                7  0066                      63
+  517         SADDR  DC    00400                                                    5  0071                      63
+1                          TEST FOR A BLANK X00-X99 AREA                                                  PAGE   21
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  518                JOB   TEST FOR A BLANK X00-X99 AREA
+  519         * RESET ........XX TO ........09.  SET STARTING
+  520         * POSITION FOR DOTS TO 221.  CHECK FOR A BLANK LINE
+  521         * WITHOUT WORD MARKS.
+  522                ORG   333                                                                0333
+  523         TBSTRT MN    DW14&1,DWLOW-1   ZERO TO ........X9                      7  0333  D 173 188           64
+  524         TB1    MN    WLOOP-1,WLOOP&4  322 BACK TO 222                         7  0340  D 014 019           64
+  525         TB2    MCW   X2,X1                                                    7  0347  M 094 089           64
+  526         TB3    SW    323                                                      4  0354  , 323               64
+  527         TBLOOP C     9&X1,332         BLANK AREA?                             7  0358  C 0|9 332           64
+  528                BU    DWPRNT           NO, PRINT                               5  0365  B 100 /             64
+  529         TB4    BW    DWPRNT,0&X1      WORDMARK? NO, PRINT                     8  0370  V 100 0|0 1         65
+  530         TB5    BCE   WRET,X1-1,9      DONE?                                   8  0378  B 049 088 9         65
+  531         TB6    A     X3-2,X1          BUMP X1 BY 10 -- MA FOR BIG CORE        7  0386  A 097 089           65
+  532         TB7    B     TBLOOP           AROUND AGAIN                            4  0393  B 358               65
+  533         MSIZ   DCW   @014@            MEMORY SIZE / 100                       3  0399                      65
+1                          CARD 20 OF CORE DUMP ROUTINE                                                   PAGE   22
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  534                JOB   CARD 20 OF CORE DUMP ROUTINE
+  535         * MOVE SOME CODE TO 333-364.  SET SOME WORD MARKS.
+  536                ORG   1                                                                  0001
+  537         TSTART CW    S1,SLOW-6                                                7  0001  ) 056 060           66
+  538                LCA   T2,TBLOOP&6                                              7  0008  L 080 364           66
+  539                SW    TB1,TB2                                                  7  0015  , 340 347           66
+  540                NOP                                                            1  0022  N                   66
+  541                NOP   0,0,0                                                    8  0023  N 000 000 0         66
+  542         T1     SW    TB3,TBLOOP                                               7  0031  , 354 358           66
+  543                CW    T1,T1                                                    7  0038  ) 031 031           67
+  544                R     USTART                                                   4  0045  1 001               67
+  545         T2     DCW   @D173188D014019M094089,323C0'9332@                      32  0080                      68
+1                          CARD 21 OF CORE DUMP ROUTINE                                                   PAGE   23
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  546                JOB   CARD 21 OF CORE DUMP ROUTINE
+  547         * MOVE SOME CODE TO 365-396.  SET SOME WORD MARKS.
+  548                ORG   1                                                                  0001
+  549         USTART LCA   U2,TB7&3                                                 7  0001  L 080 396           69
+  550                SW    U1,V1                                                    7  0008  , 030 023           69
+  551                SW    TB4,TB5                                                  7  0015  , 370 378           69
+  552                NOP                                                            1  0022  N                   69
+  553                SW    TB6,TB7                                                  7  0023  , 386 393           69
+  554         U1     NOP   0,0,0                                                    8  0030  N 000 000 0         69
+  555                SW    DWSTRT,DWSTRT                                            7  0038  , 078 078           70
+  556                R     VSTART                                                   4  0045  1 001               70
+  557                DCW   @B@              B OF  BU DWPRNT                         1  0049                      70
+  558         U2     DC    @100/V1000'01B0490889A097089B358@                       31  0080                      71
+1                          CARD 22 OF CORE DUMP ROUTINE                                                   PAGE   24
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  559                JOB   CARD 22 OF CORE DUMP ROUTINE
+  560         * SET SOME WORD MARKS.  CHANGE SWITCH TO 2060N
+  561         * CHANGE FIRST ........X9 TO ........09.
+  562         * MOVE THE CORE SIZE TO 396-399.
+  563                ORG   1                                                                  0001
+  564         VSTART SW    XRET,W4                                                  7  0001  , 060 062           72
+  565                SW    W5,WTEST                                                 7  0008  , 064 071           72
+  566                M     VSWICH,SWITCH&3  CHANGE SWITCH TO 2060                   7  0015  @ 053 171           72
+  567                M                                                              1  0022  @                   72
+  568         V1     MN    DWREAD&1,DWLOW-1  X9 TO ........09                       7  0023  D 177 188           72
+  569                NOP   0,0,0                                                    8  0030  N 000 000 0         72
+  570                LCA   VCORE,MSIZ       SAVE CORE SIZE                          7  0038  L 058 399           73
+  571                R     WSTART           READ THE NEXT CARD                      4  0045  1 001               73
+  572                W     XRET             NEW FOR SWITCH                          4  0049  2 060               73
+  573         VSWICH NOP                                                            1  0053  N                   73
+  574                DC    @  @                                                     2  0055                      73
+  575         VCORE  DCW   014              CORE SIZE / 100                         3  0058                      73
+  576                DC    00               TENS DIGIT OF CORE                      2  0060                      73
+  577                DCW   @  CORE SIZE@    JUST A COMMENT                         11  0071                      73
+1                          CARD 23 OF CORE DUMP ROUTINE                                                   PAGE   25
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  578                JOB   CARD 23 OF CORE DUMP ROUTINE
+  579         * MOVE "XXXXX-AREA " WITH ZERO SUPRESSION TO 201-211.
+  580         * UPDATE XXXXX BY 100.
+  581         * PUT ........09 - ........99 TO 212-311.
+  582         * GO PUT DATA AND WORD MARKS IN THE PRINT AREA AND
+  583         * PRINT THE DATA.  PRINT THE WORD MARKS ON RETURN.
+  584                ORG   1                                                                  0001
+  585         WSTART MCS   DWAREA,211                                               7  0001  Z 200 211           74
+  586                A     DWREAD,DWBEGN-2  BUMP ADDR BY 100                        7  0008  A 176 192           74
+  587         WLOOP  LCA   DWLOW,221        ........X9 TO PRINT                     7  0015  L 189 221           74
+  588                LCA                                                            1  0022  L                   74
+  589                A     DWREAD,WLOOP&5   BUMP ........X9 POSN                    7  0023  A 176 020           74
+  590                BCE   TBSTRT,DWLOW-1,9  DONE WITH ........X9?                  8  0030  B 333 188 9         74
+  591                A     DWREAD,DWLOW-1   BUMP X IN ........X9                    7  0038  A 176 188           75
+  592                B     WLOOP            AROUND AGAIN                            4  0045  B 015               75
+  593         WRET   A     DWREAD&2,X2      BUMP CORE START BY 100 - MA IF BIG      7  0049  A 178 094           75
+  594                B     WTEST                                                    4  0056  B 071               75
+  595         XRET      2)                  PRINT THE WORD MARKS                    2  0060  2 )                 75
+  596         W4     CC    J                SKIP ONE LINE                           2  0062  F J                 75
+  597         W5     MN    DW14&1,X3-2      ZERO TO HIGH DIGIT                      7  0064  D 173 097           75
+  598         WTEST  C     MSIZ,DWBEGN-2    DONE?                                   7  0071  C 399 192           76
+  599                BU    WSTART           DOESN'T FIT, BUT OK                     5  0078  B 001 /             76
+  600         *                               (REST IS ON CARD R)
+1                          CARD 24 OF CORE DUMP ROUTINE                                                   PAGE   26
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  601                JOB   CARD 24 OF CORE DUMP ROUTINE
+  602         * PRINT WHETHER SENSE SWITCH A IS ON.
+  603                ORG   1                                                                  0001
+  604         YSTART SW    Y1,Y3                                                    7  0001  , 031 054           77
+  605                CW    XRET,WTEST                                               7  0008  ) 060 071           77
+  606                SW    Y2,YHALT                                                 7  0015  , 036 064           77
+  607                SW                                                             1  0022  ,                   77
+  608                CW    W4,DWSTRT                                                7  0023  ) 062 078           77
+  609                NOP                                                            1  0030  N                   77
+  610         Y1     CS    332                                                      4  0031  / 332               77
+  611                CS                                                             1  0035  /                   78
+  612         Y2        N0                                                          2  0036  N 0                 78
+  613                LCA   YSWA,213                                                 7  0038  L 080 213           78
+  614                SW    YHALT&4                                                  4  0045  , 068               78
+  615                BSS   YPRINT,A         SS A ON?                                5  0049  B 063 A             78
+  616         Y3        N0                                                          2  0054  N 0                 78
+  617                MCW   DFF,214          CHANGE MSG TO  OFF                      7  0056  M 091 214           78
+  618         YPRINT W                                                              1  0063  2                   79
+  619         YHALT  H     YHALT            ALL DONE                                4  0064  . 064               79
+  620         YSWA   DCW   @SENSE SW A ON@                                         13  0080                      79
+1                          ALTERNATIVE CARD 12 OF CORE DUMP ROUTINE                                       PAGE   27
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  621                JOB   ALTERNATIVE CARD 12 OF CORE DUMP ROUTINE
+  622         * CLEAR ROUTINE THAT GETS MOVED TO 81-92
+  623                ORG   81                                                                 0081
+  624                CS    80                                                       4  0081  / 080               80
+  625         SETWM2 SW    1                                                        4  0085  , 001               80
+  626         READX2 R     1                                                        4  0089  1 001               80
+  627         *
+  628         * FIRST CARD OF TWO-CARD ALTERNATIVE SEQUENCE FOR CARDS 12-14
+  629         * MOVE APPROPRIATE COMPARISON INDICATORS TO 247..265.  MOVE
+  630         * R 001  TO 92.
+  631                ORG   1                                                                  0001
+  632                SFX   L
+  633         INC    DCW   5003             INC FOR TWO ADDRS                   L   4  0004                      81
+  634                DC    #6                                                   L   6  0010                      81
+  635         START  BU    INDON            INDICATOR ON?                       L   5  0011  B 041 /             81
+  636                LCA   MREAD&3,READX2&3  SOME INDICATOR WILL BE OFF         L   7  0016  L 033 092           81
+  637                B     INDOF                                                L   4  0023  B 049               81
+  638                DC    #3               B WITH BLANK D NEEDS NO WM          L   3  0029                      81
+  639         MREAD  R     001              GETS MOVED TO 89-92                 L   4  0030  1 001               81
+  640                DCW   #7                                                   L   7  0040                      82
+  641         INDON  MCW   110,256          MOVE INDICATOR TO PR                L   7  0041  M 110 256           82
+  642                NOP                                                        L   1  0048  N                   82
+  643         INDOF  A     READ,START&4    INCR INDICATOR TEST                  L   7  0049  A 076 015           82
+  644                A     INC,INDON&6     INCR BOTH ADDRS                      L   7  0056  A 004 047           82
+  645                BCE   READ,START&4,V  DONE?                                L   8  0063  B 076 015 V         82
+  646                NOP                                                        L   1  0071  N                   82
+  647                B     START            AROUND AGAIN                        L   4  0072  B 011               83
+  648         READ   R     STARTM           READ THE NEXT CARD                  L   4  0076  1 011               83
+  649                DCW   #1                                                   L   1  0080                      83
+1                          ALTERNATIVE CARD 13 OF CORE DUMP ROUTINE                                       PAGE   28
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  650                JOB   ALTERNATIVE CARD 13 OF CORE DUMP ROUTINE
+  651         * SECOND CARD OF TWO-CARD ALTERNATIVE SEQUENCE FOR CARDS 12-14
+  652         * CONSTRUCT OVERFLOW OFF (OR ON) INDICATOR.  MOVE IT TO 268..277.
+  653         * MOVE CS 80, SW 1 TO 81-88.  SET WORD MARKS FOR IT.
+  654         * PRINT INDICATORS. CLEAR 200-299 AND 0-80.  SET WORD MARK IN 1,
+  655         * READ A CARD AND BRANCH TO 1.
+  656                SFX   M
+  657                ORG   1                                                    M             0001
+  658         OVMSG  DCW   @OVFLO ON @                                          M   9  0009                      84
+  659                DC    #1                                                   M   1  0010                      84
+  660         START  BAV   OVON             OVERFLOW ON?                        M   5  0011  B 023 Z             84
+  661                MCW   OVFF,OVMSG       NO, CHANGE ON TO OFF                M   7  0016  M 057 009           84
+  662         OVON   MCW   OVMSG,277        MOVE MESSAGE TO PRINT AREA          M   7  0023  M 009 277           84
+  663                SW    OVCC             NEED A WM                           M   4  0030  , 074               84
+  664                LCA   OVCLR,SETWM2&3   MOVE PART OF CLEAR ROUTINE          M   7  0034  L 070 088           85
+  665                SW    SETWM2,READX2&4  IT NEEDS A WM                       M   7  0041  , 085 093           85
+  666                NOP                                                        M   1  0048  N                   85
+  667                B     OVFIN                                                M   4  0049  B 071               85
+  668                DCW   #3               BRANCH WITH BLANK D NEEDS NO WM     M   3  0055                      85
+  669         OVFF   DCW   @FF@                                                 M   2  0057                      85
+  670                DC    #5                                                   M   5  0062                      85
+  671                CS    80               GETS MOVED TO 81-84                 M   4  0063  / 080               85
+  672         OVCLR  DC    @,001@           GETS MOVED TO 85-88                 M   4  0070                      85
+  673         OVFIN  W                                                          M   1  0071  2                   86
+  674                CC    L                SKIP 3 LINES                        M   2  0072  F L                 86
+  675         OVCC   CC    K                SKIP 2 LINES                        M   2  0074  F K                 86
+  676                CS    299                                                  M   4  0076  / 299               86
+  677                NOP                                                        M   1  0080  N                   86
+  678                END                                                        M            / 000 080
+1                                                                                                         PAGE   29
+0SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  
+
+ A1          8    A10        59    A11        63    A12        67    A13        71    A2         15    A3         23   
+ A4         30    A5         38    A6         42    A7         49    A8         53    A9         57    BADDR      55   
+ BBUMP      23    BDONE      57    BINCR      67    BLOOP       1    BLOZ       71    BREPLG     42    BTESTG     15   
+ C1          8    C10        56    C11        63    C12        67    C13        71    C14        72    C15        74   
+ C16        76    C17        80    C2         12    C3         16    C4         23    C5         30    C6         34   
+ C7         41    C8         48    C9         49    CSTART      1    DDONE      67    DFF        91    DLOAD      22   
+ DLOAD2     29    DNUM       10    DREAD      76    DSTART     12    DW1        83    DW12      156    DW14      172   
+ DW3        96    DW5       101    DW7       110    DW8       117    DW9       137    DWAREA    200    DWBEGN    194   
+ DWDOTS    187    DWLOOP    106    DWLOW     189    DWPRNT    100    DWREAD    176    DWSTRT     78    E1         17   
+ ECW        67    EHAVWM      1    ELOOP      34    ENOP       80    EREAD      76    ESTART     12    FDONE      67   
+ FLOAD      22    FLOAD2     29    FNUM       10    FREAD      76    FSTART     12    GCW        67    GHAVWM      1   
+ GLOOP      34    GNOP       80    GOTGM     141    GOTWM     129    GREAD      76    GSTART     17    H1         16   
+ H2         22    H3         29    H4         48    HDOTS       7    HINDX      20    HINDX1     11    HSTART     30   
+ INC  L      4    INDOFL     49    INDONL     41    IOFF       32    ISSTXT     14    ISTART     49    JB         80   
+ JBOTH      49    JOFF       16    JON        34    JREAD      76    JSTART     11    JTWO        1    KEQUAL     15   
+ KHIGH      20    KLOW       25    KSTART     34    KUNEQ      10    LINC        4    LINDOF     49    LINDON     41   
+ LOZ       125    LREAD      76    LSTART     11    MOVFF       9    MOVFL      41    MOVFON     49    MOVON      17   
+ MREADL     30    MSIZ      399    MSTART     11    N1         67    N2         74    NCL1      105    NCL2      109   
+ NCL3      113    NCLBEG    101    NCLEAR     16    NCLEND    117    NOGM      148    NSTART     34    O1          8   
+ O2         15    O3         22    O4         23    O5         27    O6         31    O7         38    O8         42   
+ O9         78    OSTART      1    OVCC M     74    OVCLRM     70    OVFF M     57    OVFINM     71    OVMSGM      9   
+ OVON M     23    P1         80    PSTART      1    Q1         79    QSTART      1    R1         45    R5         68   
+ READ L     76    READX2     89    RSTART      1    S1         56    SADDR      71    SDONE      49    SETWM2     85   
+ SLOOP      15    SLOW       66    SSTART      1    STARTL     11    STARTM     11    SWITCH    168    T1         31   
+ T2         80    TB1       340    TB2       347    TB3       354    TB4       370    TB5       378    TB6       386   
+ TB7       393    TBLOOP    358    TBSTRT    333    TSTART      1    U1         30    U2         80    USTART      1   
+ V1         23    VCORE      58    VSTART      1    VSWICH     53    W4         62    W5         64    WLOOP      15   
+ WRET       49    WSTART      1    WTEST      71    X1         89    X2         94    X3         99    XRET       60   
+ Y1         31    Y2         36    Y3         54    YHALT      64    YPRINT     63    YSTART      1    YSWA       80   

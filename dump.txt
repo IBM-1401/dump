@@ -1,0 +1,542 @@
+
+
+
+
+
+
+
+
+   /| |\     /| |\     /| |\     /| |\     /| |\     /| |\     /| |\     /| |\
+   -----     -----     -----     -----     -----     -----     -----     -----
+ /| | | |\ /| | | |\ /| | | |\ /| | | |\ /| | | |\ /| | | |\ /| | | |\ /| | | |\
+ --------- --------- --------- --------- --------- --------- --------- ---------
+ --------- --------- --------- --------- --------- --------- --------- ---------
+ \| | | |/ \| | | |/ \| | | |/ \| | | |/ \| | | |/ \| | | |/ \| | | |/ \| | | |/
+   -----     -----     -----     -----     -----     -----     -----     -----
+   \| |/     \| |/     \| |/     \| |/     \| |/     \| |/     \| |/     \| |/
+
+   /| |\     /| |\     /| |\     /| |\     /| |\     /| |\     /| |\     /| |\
+   -----     -----     -----     -----     -----     -----     -----     -----
+ /| | | |\ /| | | |\ /| | | |\ /| | | |\ /| | | |\ /| | | |\ /| | | |\ /| | | |\
+ --------- --------- --------- --------- --------- --------- --------- ---------
+ --------- --------- --------- --------- --------- --------- --------- ---------
+ \| | | |/ \| | | |/ \| | | |/ \| | | |/ \| | | |/ \| | | |/ \| | | |/ \| | | |/
+   -----     -----     -----     -----     -----     -----     -----     -----
+   \| |/     \| |/     \| |/     \| |/     \| |/     \| |/     \| |/     \| |/
+
+
+
+                          1401 GENERAL PROGRAM LIBRARY
+
+                               Modified 1401 Dump
+
+                                     1.4.124
+
+
+
+   /| |\     /| |\     /| |\     /| |\     /| |\     /| |\     /| |\     /| |\
+   -----     -----     -----     -----     -----     -----     -----     -----
+ /| | | |\ /| | | |\ /| | | |\ /| | | |\ /| | | |\ /| | | |\ /| | | |\ /| | | |\
+ --------- --------- --------- --------- --------- --------- --------- ---------
+ --------- --------- --------- --------- --------- --------- --------- ---------
+ \| | | |/ \| | | |/ \| | | |/ \| | | |/ \| | | |/ \| | | |/ \| | | |/ \| | | |/
+   -----     -----     -----     -----     -----     -----     -----     -----
+   \| |/     \| |/     \| |/     \| |/     \| |/     \| |/     \| |/     \| |/
+
+   /| |\     /| |\     /| |\     /| |\     /| |\     /| |\     /| |\     /| |\
+   -----     -----     -----     -----     -----     -----     -----     -----
+ /| | | |\ /| | | |\ /| | | |\ /| | | |\ /| | | |\ /| | | |\ /| | | |\ /| | | |\
+ --------- --------- --------- --------- --------- --------- --------- ---------
+ --------- --------- --------- --------- --------- --------- --------- ---------
+ \| | | |/ \| | | |/ \| | | |/ \| | | |/ \| | | |/ \| | | |/ \| | | |/ \| | | |/
+   -----     -----     -----     -----     -----     -----     -----     -----
+   \| |/     \| |/     \| |/     \| |/     \| |/     \| |/     \| |/     \| |/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                             DISCLAIMER
+                           ______________
+
+Although each program has been tested by its contributor, no
+warranty, express or implied, is made by the contributor, as
+to the accuracy or functioning of the program and related
+program material, nor shall the fact of distribution constitute
+any such warranty, and no responsibility is assumed by the
+contributor, in connection therewith.
+
+
+                     Notes from the Transcriber
+             ( Van Snyder -- van.snyder@jpl.nasa.gov )
+             (               1 May 2002              )
+             (              24 Apr 2010             )
+
+The original cover page had a logo that looked something like what's
+on the previous page -- but it wasn't faked with ASCII.  The title
+was down the right side of the page, in landscape mode, not centered.
+
+ASCII Encoding is Pierce Primary (A chain) Encoding
+
+Card | Core  |     Core       |     1 2 3 4 5 6 7 8 9 0 Card Row Punch
+Zone | Units | Hundreds Zone  | Core Digit Bits     1 2 3 4 5 6 7
+Row  | Zone  | none  A  B  AB |   0 1 2 3 4 5 6 7 8 8 8 8 8 8 8 8
+=====|=======|================|===================================
+none | none  |    0  1  2   3 |     1 2 3 4 5 6 7 8 9 0 # @ : > {
+  0  |   A   |    4  5  6   7 |   ^ / S T U V W X Y Z | , % ~ \ "
+ 11  |   B   |    8  9 10  11 |   - J K L M N O P Q R ! $ * ] ; _
+ 12  |  AB   |   12 13 14  15 |   & A B C D E F G H I ? . ) [ < }
+
+Word marks are added under each card image in the listing of the
+deck, to assist studying.  You'll need to remove the word mark lines
+in order to run the deck.  1 means a word mark in the read area.  2
+means a word mark that gets set where the text in the read area gets
+moved.  3 serves both purposes (the word mark gets copied by an L
+instruction).
+
+The program has been tested in SimH 3.8-1 (http://simh.trailing-edge.com).
+It appears to work.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                            Modified 1401 Dump
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                             William A. Delchamps
+                                             General Electric Company
+                                             Apollo Support Department
+                                             P.O. Box 294
+                                             Huntsville, Alabama
+
+Modifications or revisions of this program, as they occur,
+will be announced in the appropriate Catalog of Programs
+for IBM Data Processing Systems.  When such an announce-
+ment occurs, users should order a complete new program
+from the Program Information Department.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                 Deck Key
+
+                          1.  Program Deck - 24 Cards
+
+
+
+
+
+
+
+
+
+
+
+MODIFIED 1401 DUMP
+
+
+William A. Delchamps
+General Electric Company
+Apollo Support Department
+P.O. Box 294
+Huntsville, Alabama
+
+Purpose:  This routine is the standard IBM 1401 Dump modified to pro-
+vide the following additional conveniences:
+
+          1.  Logic indicators included in the printout.
+
+          2.  All Group Marks are changed to Lozenges.
+
+          3.  Blank blocks of memory (x00-x99) are not printed.
+
+Method:   Does not apply.
+
+
+Restrictions:  None.
+
+
+Storage Requirements:  Positions 1-80 initially and 81-399 after contents
+have been printed.
+
+
+Equipment Specifications:  Any model or size memory.
+
+
+
+
+
+
+
+
+
+
+                                 MODIFIED 1401 DUMP
+
+     This routine is the Standard IBM 1401 Dump Program modified to provide the
+following additional conveniences:
+
+          1.  Logic indicators are included in the printout.
+
+          2.  All Group Marks (12-7-8) are changed to lozenges (12-4-8).
+
+          3.  All memory blocks x00-x99 which are blank and do not contain Word
+              Marks are not printed.
+
+     The recommended procedure for dumping is as follows:
+
+          1.  Restore carriage.
+
+          2.  Record I address, A address, B address, Op register, instruction
+              length and 'd' character.
+
+          3.  Manually storage print 00 area.
+
+          4.  Place dump deck in reader and press card load.
+
+     The contents of memory above positions 400 are not modified by this routine and
+program operation may be resumed after dumping if previous contents of 000-399 are
+not critical.
+
+     This routine consists of 24 self-loading cards which must be in their proper
+sequence.  The basic deck will dump for a 1.4K machine; however, alterations for
+other size memory are as follows:
+
+          1.  Different memory size:
+
+              Card 22 columns 56-60 is memory size, 01400, 02000, etc.
+
+          2.  Over 4K memory requires Modify Address instruction, replacing add:
+
+              Card 16, column 72, punch #.
+
+              Card 21, column 70, punch #.
+
+              Card 23, column 49, punch #.
+
+     This routine has been thoroughly tested on a 4K machine with both modulus 4
+and 16 addressing for all three memory sizes and on a 16K machine with modulus 16
+addressing for all six memory sizes.
+
+     If another utility routine is to follow the dump, such as a tape print: change
+card 22 column 53 to a / and discard card 24.  This will clear 0-80, set a word
+mark at 1, read card replacing card 24 and branch to 1.
+
+
+
+
+
+
+
+
+
+                                 MODIFIED 1401 DUMP
+
+,008015,023030N0000000,038042N0000000,049,053057,059,063N0,067,0711001
+1      1      1       1      1       1   1      1   1   1 1   1   1   1
+M055021M055048B042XXX}A067055B0570534B001M071XXXB023081 FK/059,0011001)
+1      1      1       1      1       1   1      1   1   1 1   1   1   1
+,008012,016,023,030034,041048,049,056063,022072,,074076,080067)023,02922)N01012N
+1      1   1   1      1      1   1      1      11      1      1   1   11 1 1   1
+.......210 /332N0000NL010210L)048A077010B0673300A077028L002332B022)0292N0FJ1012
+1      1   1   1    11      11   1      1       1      1      1   1   11 1 1   1
+M080067B034,017N/332NV0011011,101L101201B0670383A076037A076040B034)20122)N01012N
+1      1   1   11   11       1   1      1       1      1      1   1   11 1 1   1
+.......110 /300N,029NL010210LN000A077010B0673000A077028N000000B022)0292N0FJ1017N
+1      1   1   11   11      11   1      1       1      1      1   1   11 1 1   1
+M080067B034     /300/V0010811,081L081281B0670383A076037A076040B034)28122)N01030N
+1      1   1   11   11       1   1      1       1      1      1   1   11 1 1   1
+......*1*..*2*..*3*.         ,048)008012)022017)L020300,0230161049
+1              1      1      1   1      1      11      1      1   1   11 1 1   1
+SENSE SWS   ON               OFF                L014214L032234)074)067N,0111011
+1              1      1      1   1      1      11      1      1   1   11   1   1
+2         B034BM080236A001022B049M080216A001040NA076015A076080B076080HNB0111034B
+1         1    1      1      1   1      1      11      1      1       11   1   1
+   UNEQUALEQUAL HIGH  LOW        L010110L015115NL020120L025125N0000000NN0001011
+1         1    1      1      1   1      1      11      1      1       11   1   1
+5003      B041/N000000N000000B049       M110256NA076015A004047B076015VNB0111011
+1         1    1      1      1   1      1      11      1      1       11   1   1
+OVFLO OFF B041ZN 00000N000000B049       M017009NM009277N000000N0000000NN0001034
+1         1    1      1      1   1      1      11      1      1       11   1   1
+/299/080,0011001                 ,067074)011016)L016116,117113,109,1052FLFKB101
+3   2   2   2   2     1      1   1      1      11      1      1   1   11 1 1   1
+,008015,022023,027031N,038,042L0782001001)078N080,0011001........4900333-AREA 
+1      1      1      11   1   1      1   3   2   2   2   2       2 2
+L080163,190188,156156,,180,176,1721681001)2A2B1410!0}B148M1252A2A176099AB1060970
+1      1      1      11   1   1      1   3   2       2   2      2      22     
+L079124,148141,101106,,137,129,1171101001X00FF333010332/332/,2A2M0!02A2V1290!01
+1      1      1      11   1   1      1   3  2 2  2    22   22   2      2
+,045049,056060L068086N)042)027,095092,0900831001              1/B168
+1      1      1      11   1   1      1      1   1      1   1    2            1
+Z200211M071194L189261LB0491889A176188A176020B015L066251B100.....3900400
+1      1      1      11       1      1      1   1      1   1                 1
+)056060L080364,340347NN0000000,354358)0310311001D173188D014019M094089,323C0|9332
+1      1      1      11       1      1      1   3      2      2      2   2    
+L080396,030056,370378N,386393N0000000,0780781001B100/V1000|01B0490889A097089B358
+1      1      1      11      1       1      1   3    2       2       2      2 
+,060062,064071M053168MD173188N0000000L05839911642060N  01400  CORE SIZE
+1      1      1      11      1       1      1   1      1   1 1 1      1      1
+Z200211A176192L189221LA176020B3331889A176188B015A178094B0712)FJD173097C399192B00
+1      1      1      11      1       1      1   1      1   1 1 1      1      1
+,031054)060071,036064,)062078N/332/N0L080213,068B063AN0M0912142.064SENSE SW A ON
+1      1      1      11      11   11 1      1   1    1 1      11   1          
+
+
+                       ANNOTATED MODIFIED 1401 DUMP
+
+Notes provided by Van Snyder (van.snyder@jpl.nasa.gov) 30 April 2002.
+
+================================================================================
+
+1.  Set word marks for the next card.
+
+....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80
+,008015,023030N0000000,038042N0000000,049,053057,059,063N0,067,0711001
+1      1      1       1      1       1   1      1   1   1 1   1   1   1
+
+2.  Replace group marks in 81-399 by ).
+
+....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80
+M055021M055048B042XXX}A067055B0570534B001M071XXXB023081 FK/059,0011001)
+1      1      1       1      1       1   1      1   1   1 1   1   1   1
+
+3.  Set word marks for the next card, print the 201-332 area, then print the
+word marks.
+
+....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80
+,008012,016,023,030034,041048,049,056063,022072,,074076,080067)023,02922)N01012N
+1      1   1   1      1      1   1      1      11      1      1   1   11 1 1   1
+
+4.  Clear 300-332 to make sure 330 isn't a zero.  Fill in the dots and numbers
+210-330, print them.
+
+....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80
+.......210 /332N0000NL010210L)048A077010B0673300A077028L002332B022)0292N0FJ1012
+1      1   1   1    11      11   1      1       1      1      1   1   11 1 1   1
+
+5.  Clear 300-332. Remember whether 101 had a word mark.  Set one.  Load
+101-200 and its word marks to 201-300.  Clear (or don't clear) the word mark in
+201. Print.  Print word marks.
+
+....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80
+M080067B034,017N/332NV0011011,101L101201B0670383A076037A076040B034)20122)N01012N
+1      1   1   11   11       1   1      1       1      1      1   1   11 1 1   1
+
+6.  Clear 300 to make sure it isn't zero.  Fill in the dots and numbers
+110-200.  Print them.
+
+....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80
+.......110 /300N,029NL010210LN000A077010B0673000A077028N000000B022)0292N0FJ1017N
+1      1   1   11   11      11   1      1       1      1      1   1   11 1 1   1
+
+7.  Clear 300.  Remember whether 81 had a word mark.  Set one.  Load 81-99 and
+its word marks to 281-299.  Clear (or don't clear) the word mark in 281. 
+Print. Print word marks.
+
+....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80
+M080067B034     /300/V0010811,081L081281B0670383A076037A076040B034)28122)N01030N
+1      1   1   11   11       1   1      1       1      1      1   1   11 1 1   1
+
+8.  Load index register identification to 281-300.
+
+....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80
+......*1*..*2*..*3*.         ,048)008012)022017)L020300,0230161049
+1                     1      1   1      1      11      1      1   1   11 1 1   1
+
+9.  Load sense switch identifiers to 201-234.
+
+....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80
+SENSE SWS   ON               OFF                L014214L032234)074)067N,0111011
+1              1      1      1   1      1      11      1      1   1   11   1   1
+
+10. Put list of on and off sense switches in 236... (on) or 216... (off).
+
+....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80
+2         B034BM080236A001022B049M080216A001040NA076015A076080B076080HNB0111034B
+1         1    1      1      1   1      1      11      1      1       11   1   1
+
+11. Save comparison indicators in 100..125.
+
+....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80
+   UNEQUALEQUAL HIGH  LOW        L010110L015115NL020120L025125N0000000NN0001011
+1         1    1      1      1   1      1      11      1      1       11   1   1
+
+12. Move appropriate comparison indicators to 247..265.
+
+....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80
+5003      B041/N000000N000000B049       M110256NA076015A004047B076015VNB0111011
+1         1    1      1      1   1      1      11      1      1       11   1   1
+
+13. Construct overflow off (or on) indicator.  Move it to 268..277.
+
+....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80
+OVFLO OFF B041ZN 00000N000000B049       M017009NM009277N000000N0000000NN0001034
+1         1    1      1      1   1      1      11      1      1       11   1   1
+
+14. Move clear routines for 200-299 and 0-80 to 101-116.  Print indicators.
+Clear 200-299 and 0-80.  Set word mark in 1, read a card and branch to 1.
+
+....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80
+/299/080,0011001                 ,067074)011016)L016116,117113,109,1052FLFKB101
+1                     1      1   1      1      11      1      1   1   11 1 1   1
+
+15. Set word marks, move some code to 164-200.
+                                         ....170.......180.......190.......200
+....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80
+,008015,022023,027031N,038,042L0782001001)078N080,0011001........4900333-AREA 
+1      1      1      11   1   1      1   1
+
+16. Move some code to 125-163, set some word marks.
+                                         ...130.......140.......150.......160...
+....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80
+L080163,190188,156156,,180,176,1721681001)2A2B1410!0}B148M1252A2A176099AB1060970
+1      1      1      11   1   1      1   1
+
+17. Move some code to 87-124, set some word marks.
+                                         ..90.......100.......110.......120....
+....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80
+L079124,148141,101106,,137,129,1171101001X00FF333010332/332/,2A2M0!02A2V1290!01
+1      1      1      11   1   1      1   1
+
+18. Set some word marks, move some code to 78-86 (actually part of an
+instruction)
+                                                           .80...85.
+....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80
+,045049,056060L068086N)042)027,095092,0900831001              1/B168
+1      1      1      11   1   1      1      1   1      1   1                 1
+
+19. Move "00333-AREA " with zero suppression to 201-211.  Update "xxxxx-AREA "
+to 00400.  Put .....39 - ........99 in print area.  Go to print it and to
+set up to print 333-399 area.
+                                                           .....190....
+....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80
+Z200211M071194L189261LB0491889A176188A176020B015L066251B100.....3900400
+1      1      1      11       1      1      1   1      1   1                 1
+
+20. Move some code to 333-364.  Set some word marks.
+                                                .....340.......350.......360....
+....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80
+)056060L080364,340347NN0000000,354358)0310311001D173188D014019M094089,323C0|9332
+1      1      1      11       1      1      1   1
+
+21. Move some code to 365-396.  Set some word marks.
+                                                ...370.......380.......390......
+....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80
+L080396,030056,370378N,386393N0000000,0780781001B100/V1000|01B0490889A097089B358
+1      1      1      11      1       1      1   1
+
+22. Set some word marks.  Change )078N to 2060N at 164-168
+Change first ........x9 to ........09.  Move the core size to 396-399.
+                                                .....  ...
+....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80
+,060062,064071M053168MD173188N0000000L05839911642060N  01400  CORE SIZE
+1      1      1      11      1       1      1   1      1   1 1 1      1      1
+
+23. Move "xxxxx-AREA " with zero supression to 201-211.  Update xxxxx by 100.
+Put ........09 - ........99 to 212-311.  Go put data and word marks in the
+print area and print the data.  Print the word marks on return.
+
+....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80
+Z200211A176192L189221LA176020B3331889A176188B015A178094B0712)FJD173097C399192B00
+1      1      1      11      1       1      1   1      1   1 1 1      1      1
+
+24. Print whether Sense switch A is on.
+
+....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80
+,031054)060071,036064,)062078N/332/N0L080213,068B063AN0M0912142.064SENSE SW A ON
+1      1      1      11      11   11 1      1   1    1 1      11   1          
+
+================================================================================
+
+Alternate (untested) two-card sequence for cards 12-14
+
+12. Move appropriate comparison indicators to 247..265.
+Load 'Read a card and branch to 1' to 89-92
+
+....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80
+5003      B041/L033092B049   1001       M110256NA076015A004047B076015VNB0111011
+1         1    1      1      1   1      1      11      1      1       11   1   1
+
+13. Construct overflow off (or on) indicator.  Move it to 268..277.
+Move clear routine 0-80 to 81-88.  Set word marks for it.  Print indicators.
+Clear 200-299 and 0-80.  Set word mark in 1, read a card and branch to 1.
+
+....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80
+OVFLO ON  B023ZM057009M009277,074L070088,085093NB071   FF     /080,0012FLFK/299N
+1         1    1      1      1   1      1      11      1      1       11 1 1   1

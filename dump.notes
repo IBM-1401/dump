@@ -1,0 +1,643 @@
+100-200:
+....5..110......
+/299/080,0011001
+1   1   1   1   1
+
+1-200: Fill print area with data and word marks.  Read a card when done.
+....5...10....5...20....5...30....5...40....5...50....5...60....5...70....5...80....5...90....5..100
+                                                                                1/B168X00FF333010332
+                                                                             1    1   1  1 1  1    1
+....5..110....5..120....5..130....5..140....5..150....5..160....5..170....5..180....5..190....5..200
+/332/,2A2M0!02A2V1290!01)2A2B1410!0}B148M1252A2A176099AB1060970)078N080,0011001........4900333-AREA 
+1   11   1      1       1   1       1   1      1      11       1   1   1   1   1       1 1
+
+1-200:  
+....5...10....5...20....5...30....5...40....5...50....5...60....5...70....5...80....5...90....5..100
+                                                                                1/B168X00FF333010332
+                                                                             1    1   1  1 1  1    1
+....5..110....5..120....5..130....5..140....5..150....5..160....5..170....5..180....5..190....5..200
+/332/,2A2M0!02A2V1290!01)2A2B1410!0}B148M1252A2A176099AB1060970)078N080,0011001........4900400-AREA 
+1   11   1      1       1   1       1   1      1      11       1   1   1   1   1       1 1
+
+1-200: Fill print area with data and word marks.  Print it and branch to 60.
+....5...10....5...20....5...30....5...40....5...50....5...60....5...70....5...80....5...90....5..100
+                                                                                1/B168X00FF333010332
+                                                                             1    1   1  1 1  1    1
+....5..110....5..120....5..130....5..140....5..150....5..160....5..170....5..180....5..190....5..200
+/332/,2A2M0!02A2V1290!01)2A2B1410!0}B148M1252A2A176099AB10609702060N080,0011001........0900400-AREA 
+1   11   1      1       1   1       1   1      1      11       1   1   1   1   1       1 1
+
+301-399: Set ........xx back to ........09.  Set starting position for ........xx back to 221.
+Check for a blank line without word marks.
+....5..310....5..320....5..330....5..340....5..350....5..360....5..370....5..380....5..390....5..400
+                                D173188D014019M094089,323C0|9332B100/V1000|01B0490889A097089B358014
+                                1      1      1      1   1      1    1       1       1      1   1
+
+Print Layout for Index registers, indicators:
+
+....5...10....5...20....5...30....5...40....5...50....5...60....5...70....5...80....5...90....5..100
+SENSE SWS   ON b c d e f g     OFF b c d e f g   UNEQUAL            OVFLO OFF   ......*1*..*2*..*3*.
+                                                      EQUAL
+                                                          HIGH
+                                                              LOW
+
+     * SET WORD MARKS FOR THE SECOND CARD (AND SEVERAL MORE)
+               ORG  1                                                 0001
+               SW   A1,A2                                   7  0001  , 008 015
+     A1        SW   A3,A4                                   7  0008  , 023 030
+     A2        NOP  0,0,0                                   8  0015  N 000 000 0
+     A3        SW   A5,A6                                   7  0023  , 038 042
+     A4        NOP  0,0,0                                   8  0030  N 000 000 0
+     A5        SW   A7                                      4  0038  , 049
+     A6        SW   A8,A9                                   7  0042  , 053 057
+     A7        SW   A10                                     4  0049  , 059
+     A8        SW   A11                                     4  0053  , 063
+     A9           N0                                        2  0057  N 0
+     A10       SW   A12                                     4  0059  , 067
+     A11       SW   A13                                     4  0063  , 071
+     A12       R    BLOOP            READ THE NEXT CARD     4  0067  1 001
+     A13       DCW  #1                                      1  0071
+
+,008015,023030N0000000,038042N0000000,049,053057,059,063N0,067,0711001
+1      1      1       1      1       1   1      1   1   1 1   1   1   1
+
+     * Replace group marks in 81-399 by ).
+               ORG  1                                                 0001
+     BLOOP     MCW  BADDR,BTESTG&6   SET TEST ADDRESS       7  0001  M 055 021
+               MCW  BADDR,BREPLG&6   SET REPLACEMENT ADDR   7  0008  M 055 048
+     BTESTG    BCE  BREPLG,*,}       GROUP MARK?            8  0015  B 042 XXX }
+     BBUMP     A    BINCR,BADDR      UPDATE TEST ADDRESS    7  0023  A 067 055
+               BCE  BDONE,BADDR-2,4  DONE WITH SCAN?        8  0030  B 057 053 4
+               B    BLOOP            AROUND AGAIN           4  0038  B 001
+     BREPLG    MCW  BLOZ,*           REPLACE GROUP MARK     7  0042  M 071 XXX
+               B    BBUMP            UPDATE TEST ADDRESS    4  0049  B 023
+     BADDR     DCW  @081@                                   3  0055
+               DC   @ @                                     1  0056
+     BDONE     CC   K                                       2  0057  F K
+               CS   *-3              NEED NEW WORD MARKS    4  0059  / 059
+               SW   CSTART           READY FOR A NEW CARD   4  0063  , 001
+     BINCR     R    CSTART           READ A NEW CARD        4  0067  1 001
+     BLOZ      DCW  @)@              LOZENGE ON A CHAIN     1  0071
+
+M055021M055048B042XXX}A067055B0570534B001M071XXXB023081 FK/059,0011001)
+1      1      1       1      1       1   1      1   1   1 1   1   1   1
+
+     * Set word marks for the next card, print the print
+     * area, then print the word marks.
+               ORG  1                                                 0001
+     CSTART    SW   C1,C2                                   7  0001  , 008 012
+     C1        SW   C3                                      4  0008  , 016
+     C2        SW   C4                                      4  0012  , 023
+     C3        SW   C5,C6                                   7  0016  , 030 034
+     C4        SW   C7,C8                                   7  0023  , 041 048
+     C5        SW   C9                                      4  0030  , 049
+     C6        SW   C10,C11                                 7  0034  , 056 063
+     C7        SW   C4-1,C14                                7  0041  , 022 072
+     C8        SW                                           1  0048  ,
+     C9        SW   C15,C16                                 7  0049  , 074 076
+     C10       SW   C17,C12                                 7  0056  , 080 067
+     C11       CW   C4                                      4  0063  ) 023
+     C12       SW   DLOAD2                                  4  0067  , 029
+     C13       W                                            1  0071  2
+     C14          2)                                        2  0072  2 )
+     C15          N0                                        2  0074  N 0
+     C16       R    DSTART                                  4  0076  1 012
+     C17       DCW  @N@                                     1  0080
+
+,008012,016,023,030034,041048,049,056063,022072,,074076,080067)023,02922)N01012N
+1      1   1   1      1      1   1      1      11      1      1   1   11 1 1   1
+
+     * Clear 300-332 to make sure 330 isn't a zero.  Fill
+     * in the dots and numbers 210-330, print them.
+               ORG  1                                                 0001
+               DCW  @.......@                               7  0001
+     DNUM      DCW  @210@                                   3  0010
+               DC   #1                                      1  0011
+     DSTART    CS   332              ENSURE 330 IS NOT @0@  4  0012  / 332
+                  N00                                       5  0016  N 000 0
+               NOP                                          1  0021  N
+     DLOAD     LCA  DNUM,210         LOAD NUM TO PRINT      7  0022  L 010 210
+     DLOAD2    LCA                   LOAD DOTS              1  0029  L
+               CW   C8                                      4  0030  ) 048
+               A    DREAD&1,DNUM     ADD 10 T0 NUM          7  0034  A 077 010
+               BCE  DDONE,330,0      DONE?                  8  0041  B 067 330 0
+               A    DREAD&1,DLOAD&6  ADD 10 TO LOAD PLACE   7  0049  A 077 028
+               LCA  2,332            LAST TWO DOTS TO PRINT 7  0056  L 002 332
+               B    DLOAD            AROUND AGAIN           4  0063  B 022
+     DDONE     CW   DLOAD2                                  4  0067  ) 029
+               W                                            1  0071  2
+                  N0                                        2  0072  N 0
+               CC   J                                       2  0074  F J
+     DREAD     R    ESTART           READ THE NEXT CARD     4  0076  1 012
+               DCW  #1                                      1  0080
+
+.......210 /332N0000NL010210L)048A077010B0673300A077028L002332B022)0292N0FJ1012
+1      1   1   1    11      11   1      1       1      1      1   1   11 1 1   1
+
+     * Clear 300-332. Remember whether 101 had a word mark.
+     * Set one so we can load from 101 upward.  Load 101-200
+     * and its word marks to 201-300.  Clear (or don't
+     * clear) the word mark in 201. Print.  Print word marks.
+               ORG  1                                                 0001
+     EHAVWM    MCW  ENOP,ECW         CHANGE CW TO NOP       7  0001  M 080 067
+               B    ELOOP                                   4  0008  B 034
+     ESTART    SW   E1                                      4  0012  , 017
+               NOP                                          1  0016  N
+     E1        CS   332                                     4  0017  / 332
+               NOP                                          1  0021  N
+               BW   EHAVWM,101       WM IN 101?             8  0022  V 001 101 1
+               SW   101              NO, SET ONE            4  0030  , 101
+     ELOOP     LCA  101,201          LOAD TO PRINT AREA     7  0034  L 101 201
+               BCE  ECW,ELOOP&4,3    STORING AT 300 YET?    8  0041  B 067 038 3
+               A    EREAD,ELOOP&3    UPDATE FROM ADDRESS    7  0049  A 076 037
+               A    EREAD,ELOOP&6    UPDATE TO ADDRESS      7  0056  A 076 040
+               B    ELOOP            NO                     4  0063  B 034
+     ECW       CW   201              OR MAYBE NOT           4  0067  ) 201
+               W                                            1  0071  2
+                  2)                 PRINT THE WORD MARKS   2  0072  2 )
+                  N0                                        2  0074  N 0
+     EREAD     R    FSTART           READ THE NEXT CARD     4  0076  1 012
+     ENOP      DCW  @N@                                     1  0080
+
+M080067B034,017N/332NV0011011,101L101201B0670383A076037A076040B034)20122)N01012N
+1      1   1   11   11       1   1      1       1      1      1   1   11 1 1   1
+
+     * Clear 300 to make sure it isn't zero.  Fill in the
+     * dots and numbers 110-230.  Print them.
+               ORG  1                                                 0001
+               DCW  @.......@                               7  0007
+     FNUM      DCW  @110@                                   3  0010
+               DC   @ @                                     1  0011
+     FSTART    CS   300              ENSURE 300 ISN'T 0     4  0012  / 300
+               NOP                                          1  0016  N
+               SW   FLOAD2                                  4  0017  , 029
+               NOP                                          1  0021  N
+     FLOAD     LCA  FNUM,210         LOAD NUM TO PRINT      7  0022  L 010 210
+     FLOAD2    LCA                   LOAD THE DOTS          1  0029  L
+               NOP  0                                       4  0030  N 000
+               A    FREAD&1,FNUM     ADD 10 T0 NUM          7  0034  A 077 010
+               BCE  FDONE,300,0      DONE?                  8  0041  B 067 300 0
+               A    FREAD&1,FLOAD&6  ADD 10 TO LOAD PLACE   7  0049  A 077 028
+               NOP  0,0                                     7  0056  N 000 000
+               B    FLOAD            AROUND AGAIN           4  0063  B 022
+     FDONE     CW   FLOAD2                                  4  0067  ) 029
+               W                                            1  0071  2
+                  N0                                        2  0072  N 0
+               CC   J                                       2  0074  F J
+     FREAD     R    GSTART           READ THE NEXT CARD     4  0076  1 017
+               DCW  @N@                                     1  0080
+
+.......110 /300N,029NL010210LN000A077010B0673000A077028N000000B022)0292N0FJ1017N
+1      1   1   11   11      11   1      1       1      1      1   1   11 1 1   1
+
+     * Clear 300.  Remember whether 81 had a word mark.  Set
+     * one.  Load 81-99 and its word marks to 281-299.
+     * Clear (or don't clear) the word mark in 281.  Print.
+     * Print word marks.
+               ORG  1                                                 0001
+     GHAVWM    MCW  GNOP,GCW         CHANGE CW TO NOP       7  0001  M 080 067
+               B    GLOOP                                   4  0008  B 034
+               DCW  #4                                      4  0015
+               DCW  #1                                      1  0016
+     GSTART    CS   300                                     4  0017  / 300
+               CS                                           1  0021  /
+               BW   GHAVWM,81        WM IN 81?              8  0022  V 001 081 1
+               SW   81               NO, SET ONE            4  0030  , 081
+     GLOOP     LCA  81,201           LOAD TO PRINT AREA     7  0034  L 081 201
+               BCE  GCW,GLOOP&4,3    STORING AT 300 YET?    8  0041  B 067 038 3
+               A    GREAD,GLOOP&3    UPDATE FROM ADDRESS    7  0049  A 076 037
+               A    GREAD,GLOOP&6    UPDATE TO ADDRESS      7  0056  A 076 040
+               B    GLOOP            NO                     4  0063  B 034
+     GCW       CW   281              OR MAYBE NOT           4  0067  ) 281
+               W                                            1  0071  2
+                  2)                 PRINT THE WORD MARKS   2  0072  2 )
+                  N0                                        2  0074  N 0
+     GREAD     R    HSTART           READ THE NEXT CARD     4  0076  1 030
+     GNOP      DCW  @N@                                     1  0080
+
+M080067B034     /300/V0010811,081L081281B0670383A076037A076040B034)28122)N01030N
+1      1   1   11   11       1   1      1       1      1      1   1   11 1 1   1
+
+     * Load index register identification to 281-300.
+               ORG  1                                                 0001
+     HDOTS     DCW  @......*@                               7  0007
+     HINDX1    DCW  @1*..@                                  4  0011
+               DCW  @*2*.@                                  4  0015
+     H1        DCW  @.@                                     1  0016
+     HINDX     DCW  @*3*.@                                  4  0020
+               DC   #1                                      1  0021
+     H2        DCW  #1                                      1  0022
+     H3        DC   #7                                      7  0029
+     HSTART    SW   H4                                      4  0030  , 048
+               CW   HDOTS&1,HINDX&1                         7  0034  ) 008 012
+               CW   H2,H1&1                                 7  0041  ) 022 017
+     H4        CW                                           1  0048  )
+               LCA  HINDX,300        MOVE XR ID TO 300      7  0049  L 020 300
+               SW   H1,H2&1                                 7  0056  , 023 016
+               R    ISTART           READ THE NEXT CARD     4  0063  1 049
+               DCW  #4                                      4  0070
+               DCW  #1                                      1  0071
+               DCW  #2                                      2  0073
+               DCW  #2                                      2  0075
+               DCW  #4                                      2  0079
+               DCW  #1                                      1  0080
+
+......*1*..*2*..*3*.         ,048)008012)022017)L020300,0230161049
+1                            1   1      1      11      1      1   1   11 1 1   1
+
+
+     * Load sense switch identifiers to 201-234.
+               ORG  1                                                 0001
+     ISSTXT    DCW  @SENSE SWS   ON@                       14  0014
+               DC   #1                                      1  0015
+               DCW  #7                                      7  0022
+               DCW  #7                                      7  0029
+     IOFF      DCW  @OFF@                                   3  0032
+               DC   #1                                      1  0033
+               DCW  #7                                      7  0040
+               DCW  #7                                      7  0047
+               DCW  #1                                      1  0048
+     ISTART    LCA  ISSTXT,214       LOAD SS ON TEXT TO 214 7  0049  L 014 214
+               LCA  IOFF,234         LOAD SS OFF            7  0056  L 032 234
+               CW   C15                                     4  0063  ) 074
+               CW   C12                                     4  0067  ) 067
+               NOP                                          1  0071  N
+               SW   JSTART                                  4  0072  , 011
+               R    JSTART           READ THE NEXT CARD     4  0076  1 011
+               DCW  #1                                      1  0080
+
+SENSE SWS   ON               OFF                L014214L032234)074)067N,0111011
+1              1      1      1   1      1      11      1      1   1   11   1   1
+
+     * Put list of on and off sense switches in 236... (on)
+     * or 216... (off).
+               ORG  1                                                 0001
+     JTWO      DCW  2                                       1  0001
+               DC   #9                                      9  0010
+     JSTART    BSS  JON,B            SWITCH ON?             5  0011  B 034 B
+     JOFF      M    JB,236           NO, MOVE SS ID TO OFF  7  0016  M 080 236
+               A    JTWO,JOFF&6      INCR OFF ID SPOT       7  0023  A 001 022
+               B    JBOTH                                   4  0030  B 049
+     JON       M    JB,216           YES, MOVE SS ID TO ON  7  0034  M 080 216
+               A    JTWO,JON&6                              7  0041  A 001 040
+               NOP                                          1  0048  N
+     JBOTH     A    JREAD,JSTART&4   INCR SWITCH TEST       7  0049  A 076 015
+               A    JREAD,JB         INCR SS ID             7  0056  A 076 080
+               BCE  JREAD,JB,H       DONE?                  8  0063  B 076 080 H
+               NOP                                          1  0071  N
+               B    JSTART           AROUND AGAIN           4  0072  B 011
+     JREAD     R    KSTART           READ THE NEXT CARD     4  0076  1 034
+     JB        DCW  @B@              SS ID TO PRINT         1  0080
+
+2         B034BM080236A001022B049M080216A001040NA076015A076080B076080HNB0111034B
+1         1    1      1      1   1      1      11      1      1       11   1   1
+
+     * Save comparison indicators in 100..125.
+               ORG  1                                                 0001
+     KUNEQ     DCW  @   UNEQUAL@                            7  0010
+     KEQUAL    DCW  @EQUAL@                                 5  0015
+     KHIGH     DCW  @ HIGH@                                 5  0020
+               DC   #2                                      2  0022
+     KLOW      DCW  @LOW@                                   3  0025
+               DC   #4                                      4  0029
+               DCW  #4                                      4  0033
+     KSTART    LCA  KUNEQ,110        SAVE  UNEQUAL          7  0034  L 010 110
+               LCA  KEQUAL,115       SAVE  EQUAL            7  0041  L 015 115
+               NOP                                          1  0048  N
+               LCA  KHIGH,120        SAVE  HIGH             7  0049  L 020 120
+               LCA  KLOW,125         SAVE  LOW              7  0056  L 025 125
+               NOP  0,0,0                                   8  0063  N 000 000 0
+               NOP                                          1  0071  N
+               NOP  0                                       4  0072  N 000
+               R    LSTART                                  4  0076  R 011
+               DCW  #1                                      1  0080
+
+   UNEQUALEQUAL HIGH  LOW        L010110L015115NL020120L025125N0000000NN0001011
+1         1    1      1      1   1      1      11      1      1       11   1   1
+
+     * Move appropriate comparison indicators to 247..265.
+               ORG  1                                                 0001
+     LINC      DCW  5003             INC FOR TWO ADDRS      4  0004
+               DC   #6                                      6  0010
+     LSTART    BU   LINDON           INDICATOR ON?          5  0011  B 041 /
+               NOP  0,0                                     7  0016  N 000 000
+               NOP  0,0                                     7  0023  N 000 000
+               B    LINDOF           NO                     4  0030  B 049
+               DCW  #7                                      7  0040
+     LINDON    MCW  110,256          MOVE INDICATOR TO PR   7  0041  M 110 256
+               NOP                                          1  0048  N
+     LINDOF    A    LREAD,LSTART&4   INCR INDICATOR TEST    7  0049  A 076 015
+               A    LINC,LINDON&6    INCR BOTH ADDRS        7  0056  A 004 047
+               B    LREAD,LSTART&4,V  DONE?                 8  0063  B 076 015 V
+               NOP                                          1  0071  N
+               B    LSTART           AROUND AGAIN           4  0072  B 011
+     LREAD     R    MSTART           READ THE NEXT CARD     4  0075  1 011
+               DCW  #1                                      1  0080
+
+5003      B041/N000000N000000B049       M110256NA076015A004047B076015VNB0111011
+1         1    1      1      1   1      1      11      1      1       11   1   1
+
+     * Construct overflow off (or on) indicator.
+     * Move it to 268..277.
+               ORG  1                                                 0001
+     MOVFF     DCW  @OVFLO OFF@                             9  0009
+               DC   #1                                      1  0010
+     MSTART    BAV  MOVFL            OVERFLOW?              5  0011  B 041 Z
+     MOVON     DCW  @N @             NOP, AND  N  FOR MSG   2  0017
+               DC   @00000@          REST OF THE NOP INSTR  5  0022
+               NOP  0,0                                     7  0023  N 000 000
+               B    MOVFON                                  4  0030  B 049
+               DCW  #7                                      7  0040
+     MOVFL     MCW  MOVON,MOVFF      CHANGE  OFF  TO  ON    7  0041  M 017 009
+               NOP                                          1  0048  N
+     MOVFON    MCW  MOVFF,277        MOVE MSG TO PRINT AREA 7  0049  M 009 277
+               NOP  0,0                                     7  0056  N 000 000  
+               NOP  0,0,0                                   8  0063  N 000 000 0
+               NOP                                          1  0071  N
+               NOP  0                                       4  0072  N 000
+               R    NSTART                                  4  0076  1 034
+               DCW  #1                                      1  0080
+
+OVFLO OFF B041ZN 00000N000000B049       M017009NM009277N000000N0000000NN0001034
+1         1    1      1      1   1      1      11      1      1       11   1   1
+
+     * Move clear routines for 200-299 and 0-80 to
+     * 101-116.  Print indicators. Clear 200-299 and 0-80.
+     * Set word mark in 1, read a card and branch to 1.
+               ORG  1                                                 0001
+               DCW  @/299/080,0@     CLEAR STORAGE ROUTINE 10  0010
+               DCW  @01100@          SEE SOURCE CODE BELOW  5  0015
+     NCLEAR    DCW  @1@                                     1  0016
+               DC   #6                                      6  0022
+               DCW  #7                                      7  0029
+               DCW  #4                                      7  0033
+     NSTART    SW   N1,N2                                   7  0034  , 067 074
+               CW   JSTART,NCLEAR                           7  0041  ) 011 016
+               CW                                           1  0048  )
+               LCA  NCLEAR,NCLEND-1                         7  0049  L 016 116
+               SW   NCLEND,NCL3                             7  0056  , 117 113
+               SW   NCL2                                    4  0063  , 109
+     N1        SW   NCL1                                    4  0067  , 105
+               W                                            1  0071  2
+               CC   L                                       2  0072  F L
+     N2        CC   K                                       2  0074  F K
+               B    NCLBEG                                  4  0076  B 101
+               DCW  #1                                      1  0080
+     * Routine to clear 200-299 and 0-80, then set a word
+     * mark at 1, read a card and branch to 1.  The text of
+     * this routine is punched in cc 1-16 of card N.
+               ORG  101                                               0101
+     NCLBEG    CS   299                                     4  0101  / 299
+     NCL1      CS   80                                      4  0105  / 080
+     NCL2      SW   1                                       4  0109  , 001
+     NCL3      R    OSTART                                  4  0113  1 001
+     NCLEND    DCW  #1                                      1  0117
+
+/299/080,0011001                 ,067074)011016)L016116,117113,109,1052FLFKB101
+1                     1      1   1      1      11      1      1   1   11 1 1   1
+1         1    1      1      1   1      1      11      1      1       11   1   1
+
+     * Routine to move data and word marks to print area.
+     * Convert group marks to ).
+     * Read a card when done.
+               ORG  78
+     DWSTRT    BU   WSTART                                  5  0078  B 001 /
+     DW1       B    SWITCH                                  4  0083  B 168
+     X1        DCW  @X00@                                   3  0089
+     DFF       DCW  @FF@                                    2  0091
+     X2        DCW  333                                     3  0094
+     DW3       DCW  01                                      2  0096
+     X3        DC   033                                     3  0099
+     DWPRNT    W                                            1  0100  2
+     DW5       CS   332                                     4  0101  / 332
+               CS                                           1  0105  /
+     DWLOOP    SW   212&X3           ASSUME DATA HAS WM     4  0106  , 2A2
+     DW7       MCW  0&X2,212&X3      MOVE THE DATA          7  0110  M 0!0 2A2
+     DW8       BW   GOTWM,0&X2       DID IT HAVE WM?        8  0117  V 129 0!0 1
+     LOZ       CW   212&X3           NO, CLEAR ASSUMED WM   4  0125  ) 2A2
+     GOTWM     BCE  GOTGM,0&X3,}     GROUP MARK?            8  0129  B 141 0!0 }
+     DW9       B    NOGM             NO                     4  0137  B 148
+     GMTGM     MCW  LOZ,212&X3       REPL GROUP MARK WITH ) 7  0141  M 125 2A2
+     NOGM      A    DWREAD,X3        BUMP X3                7  0148  A 176 099
+               A                     BUMP X2                1  0155  A
+     DW12      BCE  DWLOOP,X3-2,0    AROUND AGAIN           8  0156  B 106 097 0
+               CW   DWSTRT           CHANGED LATER TO W 060 4  0164  ) 078
+     SWITCH    NOP  080              CHANGED TO N OR /      4  0168  N 080
+     DW14      SW   PSTART                                  4  0172  , 001
+     DWREAD    R    PSTART           READ THE NEXT CARD     4  0176  1 001
+     DWDOTS    DCW  @........@                              8  0187
+     DWLOW     DCW  49               LOW ORDER TWO DIGITS   2  0189
+     DWBEGN    DCW  00333            BEGIN OF LINE          5  0194
+     DWAREA    DC   @-AREA @                                6  0200
+
+     * Set word marks, move some code to 164-200.
+               ORG  1                                                 0001
+     OSTART    SW   O1,O2                                   7  0001  , 008 015
+     O1        SW   O3,O4                                   7  0008  , 022 023
+     O2        SW   O5,O6                                   7  0015  , 027 031
+     O3        NOP                                          1  0022  N
+     O4        SW   O7                                      4  0023  , 038
+     O5        SW   O8                                      4  0027  , 042
+     O6        LCA  O9,DWAREA                               7  0031  L 078 200
+     O7        R    PSTART                                  4  0038  1 001
+     O8        DCW  @)@              CW JUST BEFORE SWITCH  1  0042
+     O9        DC   @078N080,0011001........4900333-AREA @ 36  0078
+
+                                         ....170.......180.......190.......200
+,008015,022023,027031N,038,042L0782001001)078N080,0011001........4900333-AREA 
+1      1      1      11   1   1      1   1
+
+     * Move some code to 125-163, set some word marks.
+               ORG  1                                                 0001
+     PSTART    LCA  P1,DW12&7                               7  0001  L 080 163
+               SW   DWBEGN-4,DWLOW-1                        7  0008  , 190 188
+               SW   DW12,DW12                               7  0015  , 156 156
+               SW                                           1  0022  ,
+               SW   DWDOTS-7                                4  0023  , 180
+               SW   DWREAD                                  4  0027  , 176
+               SW   DW14,SWITCH                             7  0031  , 172 168
+               R    QSTART                                  4  0038  1 001
+               DCW  @)2A2B1410!0}B148M1252A2A176099A@      31  0072
+     P1        DC   @B1060970@                              8  0080
+
+                                         ...130.......140.......150.......160...
+L080163,190188,156156,,180,176,1721681001)2A2B1410!0}B148M1252A2A176099AB1060970
+1      1      1      11   1   1      1   1
+
+     * Move some code to 87-124, set some word marks.
+               ORG  1                                                 0001
+     QSTART    LCA  Q1,DW8&7                                7  0001  L 079 124
+               SW   NOGM,GOTGM                              7  0008  , 148 141
+               SW   DW5,DWLOOP                              7  0015  , 101 106
+               SW                                           1  0022  ,
+               SW   DW9                                     4  0023  , 137
+               SW   GOTWM                                   4  0027  , 129
+               SW   DW8,DW7                                 7  0031  , 117 110
+               R    SSTART                                  4  0038  1 001
+               DCW  @X00FF333010332/332/,2A2M0!02A2@       30  0071
+     Q1        DC   @V1290!01@                              8  0079
+
+                                         ..90.......100.......110.......120....
+L079124,148141,101106,,137,129,1171101001X00FF333010332/332/,2A2M0!02A2V1290!01
+1      1      1      11   1   1      1   1
+
+     * Set some word marks, move some code to 78-86
+     * (actually part of an instruction)
+               ORG  1                                                 0001
+     RSTART    SW   R1,SDONE                                7  0001  , 045 049
+               SW   S1,SLOW-6                               7  0008  , 056 060
+               LCA  R5,DW1&3                                7  0015  L 068 086
+               NOP                                          1  0022  N
+               CW   O8                                      4  0023  ) 042
+               CW   O5                                      4  0027  ) 027
+               SW   X2&1,X2-2                               7  0031  , 095 092
+               SW   X1&1,DW1                                7  0038  , 090 083
+     R1        R    SSTART                                  4  0045  1 001
+               DCW  #11                                    11  0059
+     R5        DCW  @   1/B168@                             9  0068
+
+                                                           .80...85.
+,045049,056060L068086N)042)027,095092,0900831001              1/B168         
+1      1      1      11   1   1      1      1   1      1   1                 1
+
+     * Move "00333-AREA " with zero suppression to
+     * 201-211.  Update "xxxxx-AREA " to 00400.  Put
+     * .....39 - ........99 in print area.  Go to print it
+     * and to set up to print 333-399 area.
+               ORG  1                                                 0001
+     SSTART    MCS  DWAREA,211                              7  0001  Z 200 211
+               MCW  SADDR,DWBEGN     REPLACE 333 WITH 400   7  0008  M 071 194
+     SLOOP     LCA  DWLOW,261        FIRST DOTS OFFSET 49   7  0015  L 189 261
+               LCA                   MOVE THE DOTS          1  0022  L
+               BCE  SDONE,DWLOW-1,9  DONE FILLING DOTS?     8  0023  B 049 188 9
+               A    DWREAD,DWLOW-1   BUMP DOTS ADDR BY 10   7  0031  A 176 188
+               A    DWREAD,SLOOP&5   BUMP DOTS POINT BY 10  7  0038  A 176 020
+               B    SLOOP            AROUND AGAIN           4  0045  B 015
+     SDONE     LCA  SLOW,251         PUT ......39 IN PRINT  7  0049  L 066 251
+     S1        B    DWPRNT           GO PRINT IT            4  0056  B 100
+     SLOW      DCW  @.....39@                               7  0066
+     SADDR     DC   00400                                   5  0071
+
+                                                           .....190....
+Z200211M071194L189261LB0491889A176188A176020B015L066251B100.....3900400
+1      1      1      11       1      1      1   1      1   1                 1
+
+     * Reset ........xx to ........09.  Set starting
+     * position for dots to 221.  Check for a blank line
+     * without word marks.
+               ORG  333                                               0333
+     TBSTRT    MN   173,DWLOW-1                             7  0333  D 173 188
+     TB1       MN   WLOOP-1,WLOOP&4  BACK TO 222            7  0340  D 014 019
+     TB2       MCW  X2,X1                                   7  0347  M 094 089
+     TB3       SW   323                                     4  0354  , 323
+     TBLOOP    C    9&X1,332         BLANK AREA?            7  0358  C 0|9 332
+               BU   DWPRNT           NO, PRINT              5  0365  B 100 /
+     TB4       BW   DWPRNT,0&X1      WORDMARK? NO, PRINT    8  0370  V 100 0|0 1
+     TB5       BCE  WRET,X1-1,9      DONE?                  8  0378  B 049 088 9
+     TB6       A    X3-2,X1          BUMP X1 BY 10          7  0386  A 097 089
+     TB7       B    TBLOOP           AROUND AGAIN           4  0393  B 358
+     MSIZ      DCW  @014@            MEMORY SIZE / 100      3  0399
+ 
+     * Move some code to 333-364.  Set some word marks.
+               ORG  1                                                 0001
+     TSTART    CW   S1,SLOW-6                               7  0001  ) 056 060
+               LCA  T2,TBLOOP&6                             7  0008  L 080 364
+               SW   TB1,TB2                                 7  0015  , 340 347
+               NOP                                          1  0022  N
+               NOP  0,0,0                                   8  0023  N 000 000 0
+     T1        SW   TB3,TBLOOP                              7  0031  , 354 358
+               CW   T1,T1                                   7  0038  ) 031 031
+               R    USTART                                  4  0045  1 001
+     T2        DCW  @D173188D014019M094089,323C0|9332@     32  0080
+
+                                                .....340.......350.......360....
+)056060L080364,340347NN0000000,354358)0310311001D173188D014019M094089,323C0|9332
+1      1      1      11       1      1      1   1
+
+     * Move some code to 365-396.  Set some word marks.
+               ORG  1                                                 0001
+     USTART    LCA  U2,TB7&3                                7  0001  L 080 396
+               SW   U1,V1                                   7  0008  , 030 056
+               SW   TB4,TB5                                 7  0015  , 370 378
+               NOP                                          1  0022  N
+               SW   TB6,TB7                                 7  0023  , 386 393
+     U1        NOP  0,0,0                                   8  0030  N 000 000 0
+               SW   DWSTRT,DWSTRT                           7  0038  , 078 078
+               R    VSTART                                  4  0045  1 001
+               DCW  @B@              B OF  BU DWPRNT        1  0049
+     U2        DC   @100/V1000|01B0490889A097089B358@      31  0080
+
+                                                ...370.......380.......390......
+L080396,030056,370378N,386393N0000000,0780781001B100/V1000|01B0490889A097089B358
+1      1      1      11      1       1      1   1       
+
+     * Set some word marks.  Change SWITCH to 2060N
+     * Change first ........x9 to ........09.
+     * Move the core size to 396-399.
+               ORG  1                                                 0001
+     VSTART    SW   XRET,W4                                 7  0001  , 060 062
+               SW   W5,WTEST                                7  0008  , 064 071
+               M    VSWICH,SWITCH&3  CHANGE SWITCH TO 2060  7  0015  M 053 168
+               M                                            1  0022  M
+     V1        MN   DWREAD&1,DWLOW-1  X9 TO ........09      7  0023  D 173 188
+               NOP  0,0,0                                   8  0030  N 000 000 0
+               LCA  VCORE,MSIZ       SAVE CORE SIZE         7  0038  L 058 399
+               R    WSTART           READ THE NEXT CARD     4  0045  1 164
+               W    XRET             NEW FOR SWITCH         4  0049  2 060
+     VSWICH    NOP                                          1  0053  N
+               DC   @  @                                    2  0055
+     VCORE     DCW  014              CORE SIZE / 100        4  0058
+               DC   00               TENS DIGIT OF CORE     2  0060
+               DCW  @  CORE SIZE@    JUST A COMMENT        11  0071
+                                                .....  ...
+,060062,064071M053168MD173188N0000000L05839911642060N  01400  CORE SIZE
+1      1      1      11      1       1      1   1      1   1 1 1      1      1
+
+     * Move "xxxxx-AREA " with zero supression to 201-211.
+     * Update xxxxx by 100.
+     * Put ........09 - ........99 to 212-311.
+     * Go put data and word marks in the print area and
+     * print the data.  Print the word marks on return.
+               ORG  1                                                 0001
+     WSTART    MCS  DWAREA,211                              7  0001  Z 200 211
+               A    DWREAD,DWBEGN-2  BUMP ADDR BY 100       7  0008  A 176 192
+     WLOOP     LCA  DWLOW,221        ........X9 TO PRINT    7  0015  L 189 222
+               LCA                                          1  0022  L
+               A    DWREAD,WLOOP&5   BUMP ........X9 POSN   7  0023  A 176 020
+               BCE  TBSTRT,DWLOW-1,9  DONE WITH ........X9? 8  0030  B 333 188 9
+               A    DWREAD,DWLOW-1   BUMP X IN ........X9   7  0038  A 176 188
+               B    WLOOP            AROUND AGAIN           4  0045  B 015
+     WRET      A    DWREAD&2,X2      BUMP CORE START BY 100 7  0049  A 178 094
+               B    WTEST                                   4  0056  B 071
+     XRET         2)                 PRINT THE WORD MARKS   2  0060  2 )
+     W4        CC   J                                       2  0062  F J
+     W5        MN   DW14&1,X3-2      ZERO TO HIGH DIGIT     7  0064  D 173 097
+     WTEST     C    MSIZ,DWBEGN-2    DONE?                  7  0071  C 399 192
+               BU   WSTART           DOESN'T FIT, BUT OK    3  0078  B 001 /
+     *                               (rest is on card R)
+
+Z200211A176192L189221LA176020B3331889A176188B015A178094B0712)FJD173097C399192B00
+1      1      1      11      1       1      1   1      1   1 1 1      1      1
+
+     * Print whether Sense switch A is on.
+               ORG  1                                                 0001
+     YSTART    SW   Y1,Y3                                   7  0001  , 031 054
+               CW   XRET,WTEST                              7  0008  ) 060 071
+               SW   Y2,YHALT                                7  0015  , 036 064
+               SW                                           1  0022  ,
+               CW   W4,DWSTRT                               7  0023  ) 062 078
+               NOP                                          1  0030
+     Y1        CS   332                                     4  0031  / 332
+               CS                                           1  0035  /
+     Y2           N0                                        2  0036  N 0
+               LCA  YSWA,213                                7  0038  L 080 213
+               SW   YHALT&4                                 4  0045  , 068
+               BSS  YPRINT,A         SS A ON?               5  0049  B 063 A
+     Y3           N0                                        2  0054  N 0
+               MCW  DFF,214          CHANGE MSG TO  OFF     7  0056  M 091 214
+     YPRINT    W                                            1  0063  2
+     YHALT     H    YHALT            ALL DONE               4  0064  . 064
+     YSWA      DCW  @SENSE SW A ON@                        13  0080
+
+,031054)060071,036064,)062078N/332/N0L080213,068B063AN0M0912142.064SENSE SW A ON
+1      1      1      11      11   11 1      1   1    1 1      11   1          

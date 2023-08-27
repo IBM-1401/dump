@@ -1,0 +1,1179 @@
+%!PS-Adobe-3.0
+%%BoundingBox: 38 24 574 768
+%%Title: Enscript Output
+%%For: Van Snyder
+%%Creator: GNU enscript 1.6.4
+%%CreationDate: Sat Apr 24 12:37:44 2010
+%%Orientation: Portrait
+%%Pages: (atend)
+%%DocumentMedia: Letter 612 792 0 () ()
+%%DocumentNeededResources: (atend)
+%%EndComments
+%%BeginProlog
+%%BeginResource: procset Enscript-Prolog 1.6 4
+%
+% Procedures.
+%
+
+/_S {	% save current state
+  /_s save def
+} def
+/_R {	% restore from saved state
+  _s restore
+} def
+
+/S {	% showpage protecting gstate
+  gsave
+  showpage
+  grestore
+} bind def
+
+/MF {	% fontname newfontname -> -	make a new encoded font
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  % insert only valid encoding vectors
+  encoding_vector length 256 eq {
+    newfont /Encoding encoding_vector put
+  } if
+
+  newfontname newfont definefont pop
+} def
+
+/MF_PS { % fontname newfontname -> -	make a new font preserving its enc
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  newfontname newfont definefont pop
+} def
+
+/SF { % fontname width height -> -	set a new font
+  /height exch def
+  /width exch def
+
+  findfont
+  [width 0 0 height 0 0] makefont setfont
+} def
+
+/SUF { % fontname width height -> -	set a new user font
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF
+  /F-gs-user-font width height SF
+} def
+
+/SUF_PS { % fontname width height -> -	set a new user font preserving its enc
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF_PS
+  /F-gs-user-font width height SF
+} def
+
+/M {moveto} bind def
+/s {show} bind def
+
+/Box {	% x y w h -> -			define box path
+  /d_h exch def /d_w exch def /d_y exch def /d_x exch def
+  d_x d_y  moveto
+  d_w 0 rlineto
+  0 d_h rlineto
+  d_w neg 0 rlineto
+  closepath
+} def
+
+/bgs {	% x y height blskip gray str -> -	show string with bg color
+  /str exch def
+  /gray exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    gray setgray
+    fill
+  grestore
+  x y M str s
+} def
+
+/bgcs { % x y height blskip red green blue str -> -  show string with bg color
+  /str exch def
+  /blue exch def
+  /green exch def
+  /red exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    red green blue setrgbcolor
+    fill
+  grestore
+  x y M str s
+} def
+
+% Highlight bars.
+/highlight_bars {	% nlines lineheight output_y_margin gray -> -
+  gsave
+    setgray
+    /ymarg exch def
+    /lineheight exch def
+    /nlines exch def
+
+    % This 2 is just a magic number to sync highlight lines to text.
+    0 d_header_y ymarg sub 2 sub translate
+
+    /cw d_output_w cols div def
+    /nrows d_output_h ymarg 2 mul sub lineheight div cvi def
+
+    % for each column
+    0 1 cols 1 sub {
+      cw mul /xp exch def
+
+      % for each rows
+      0 1 nrows 1 sub {
+        /rn exch def
+        rn lineheight mul neg /yp exch def
+        rn nlines idiv 2 mod 0 eq {
+	  % Draw highlight bar.  4 is just a magic indentation.
+	  xp 4 add yp cw 8 sub lineheight neg Box fill
+	} if
+      } for
+    } for
+
+  grestore
+} def
+
+% Line highlight bar.
+/line_highlight {	% x y width height gray -> -
+  gsave
+    /gray exch def
+    Box gray setgray fill
+  grestore
+} def
+
+% Column separator lines.
+/column_lines {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h translate
+    /cw d_output_w cols div def
+    1 1 cols 1 sub {
+      cw mul 0 moveto
+      0 d_output_h rlineto stroke
+    } for
+  grestore
+} def
+
+% Column borders.
+/column_borders {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h moveto
+    0 d_output_h rlineto
+    d_output_w 0 rlineto
+    0 d_output_h neg rlineto
+    closepath stroke
+  grestore
+} def
+
+% Do the actual underlay drawing
+/draw_underlay {
+  ul_style 0 eq {
+    ul_str true charpath stroke
+  } {
+    ul_str show
+  } ifelse
+} def
+
+% Underlay
+/underlay {	% - -> -
+  gsave
+    0 d_page_h translate
+    d_page_h neg d_page_w atan rotate
+
+    ul_gray setgray
+    ul_font setfont
+    /dw d_page_h dup mul d_page_w dup mul add sqrt def
+    ul_str stringwidth pop dw exch sub 2 div ul_h_ptsize -2 div moveto
+    draw_underlay
+  grestore
+} def
+
+/user_underlay {	% - -> -
+  gsave
+    ul_x ul_y translate
+    ul_angle rotate
+    ul_gray setgray
+    ul_font setfont
+    0 0 ul_h_ptsize 2 div sub moveto
+    draw_underlay
+  grestore
+} def
+
+% Page prefeed
+/page_prefeed {		% bool -> -
+  statusdict /prefeed known {
+    statusdict exch /prefeed exch put
+  } {
+    pop
+  } ifelse
+} def
+
+% Wrapped line markers
+/wrapped_line_mark {	% x y charwith charheight type -> -
+  /type exch def
+  /h exch def
+  /w exch def
+  /y exch def
+  /x exch def
+
+  type 2 eq {
+    % Black boxes (like TeX does)
+    gsave
+      0 setlinewidth
+      x w 4 div add y M
+      0 h rlineto w 2 div 0 rlineto 0 h neg rlineto
+      closepath fill
+    grestore
+  } {
+    type 3 eq {
+      % Small arrows
+      gsave
+        .2 setlinewidth
+        x w 2 div add y h 2 div add M
+        w 4 div 0 rlineto
+        x w 4 div add y lineto stroke
+
+        x w 4 div add w 8 div add y h 4 div add M
+        x w 4 div add y lineto
+	w 4 div h 8 div rlineto stroke
+      grestore
+    } {
+      % do nothing
+    } ifelse
+  } ifelse
+} def
+
+% EPSF import.
+
+/BeginEPSF {
+  /b4_Inc_state save def    		% Save state for cleanup
+  /dict_count countdictstack def	% Count objects on dict stack
+  /op_count count 1 sub def		% Count objects on operand stack
+  userdict begin
+  /showpage { } def
+  0 setgray 0 setlinecap
+  1 setlinewidth 0 setlinejoin
+  10 setmiterlimit [ ] 0 setdash newpath
+  /languagelevel where {
+    pop languagelevel
+    1 ne {
+      false setstrokeadjust false setoverprint
+    } if
+  } if
+} bind def
+
+/EndEPSF {
+  count op_count sub { pos } repeat	% Clean up stacks
+  countdictstack dict_count sub { end } repeat
+  b4_Inc_state restore
+} bind def
+
+% Check PostScript language level.
+/languagelevel where {
+  pop /gs_languagelevel languagelevel def
+} {
+  /gs_languagelevel 1 def
+} ifelse
+%%EndResource
+%%BeginResource: procset Enscript-Encoding-88591 1.6 4
+/encoding_vector [
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclam       	/quotedbl     	/numbersign   	
+/dollar       	/percent      	/ampersand    	/quoteright   	
+/parenleft    	/parenright   	/asterisk     	/plus         	
+/comma        	/hyphen       	/period       	/slash        	
+/zero         	/one          	/two          	/three        	
+/four         	/five         	/six          	/seven        	
+/eight        	/nine         	/colon        	/semicolon    	
+/less         	/equal        	/greater      	/question     	
+/at           	/A            	/B            	/C            	
+/D            	/E            	/F            	/G            	
+/H            	/I            	/J            	/K            	
+/L            	/M            	/N            	/O            	
+/P            	/Q            	/R            	/S            	
+/T            	/U            	/V            	/W            	
+/X            	/Y            	/Z            	/bracketleft  	
+/backslash    	/bracketright 	/asciicircum  	/underscore   	
+/quoteleft    	/a            	/b            	/c            	
+/d            	/e            	/f            	/g            	
+/h            	/i            	/j            	/k            	
+/l            	/m            	/n            	/o            	
+/p            	/q            	/r            	/s            	
+/t            	/u            	/v            	/w            	
+/x            	/y            	/z            	/braceleft    	
+/bar          	/braceright   	/tilde        	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclamdown   	/cent         	/sterling     	
+/currency     	/yen          	/brokenbar    	/section      	
+/dieresis     	/copyright    	/ordfeminine  	/guillemotleft	
+/logicalnot   	/hyphen       	/registered   	/macron       	
+/degree       	/plusminus    	/twosuperior  	/threesuperior	
+/acute        	/mu           	/paragraph    	/bullet       	
+/cedilla      	/onesuperior  	/ordmasculine 	/guillemotright	
+/onequarter   	/onehalf      	/threequarters	/questiondown 	
+/Agrave       	/Aacute       	/Acircumflex  	/Atilde       	
+/Adieresis    	/Aring        	/AE           	/Ccedilla     	
+/Egrave       	/Eacute       	/Ecircumflex  	/Edieresis    	
+/Igrave       	/Iacute       	/Icircumflex  	/Idieresis    	
+/Eth          	/Ntilde       	/Ograve       	/Oacute       	
+/Ocircumflex  	/Otilde       	/Odieresis    	/multiply     	
+/Oslash       	/Ugrave       	/Uacute       	/Ucircumflex  	
+/Udieresis    	/Yacute       	/Thorn        	/germandbls   	
+/agrave       	/aacute       	/acircumflex  	/atilde       	
+/adieresis    	/aring        	/ae           	/ccedilla     	
+/egrave       	/eacute       	/ecircumflex  	/edieresis    	
+/igrave       	/iacute       	/icircumflex  	/idieresis    	
+/eth          	/ntilde       	/ograve       	/oacute       	
+/ocircumflex  	/otilde       	/odieresis    	/divide       	
+/oslash       	/ugrave       	/uacute       	/ucircumflex  	
+/udieresis    	/yacute       	/thorn        	/ydieresis    	
+] def
+%%EndResource
+%%EndProlog
+%%BeginSetup
+%%IncludeResource: font Courier-Bold
+%%IncludeResource: font Courier
+/HFpt_w 10 def
+/HFpt_h 10 def
+/Courier-Bold /HF-gs-font MF
+/HF /HF-gs-font findfont [HFpt_w 0 0 HFpt_h 0 0] makefont def
+/Courier /F-gs-font MF
+/F-gs-font 10 10 SF
+/#copies 1 def
+% Pagedevice definitions:
+gs_languagelevel 1 gt {
+  <<
+    /PageSize [612 792] 
+  >> setpagedevice
+} if
+/d_page_w 536 def
+/d_page_h 744 def
+/d_header_x 0 def
+/d_header_y 744 def
+/d_header_w 536 def
+/d_header_h 0 def
+/d_footer_x 0 def
+/d_footer_y 0 def
+/d_footer_w 536 def
+/d_footer_h 0 def
+/d_output_w 536 def
+/d_output_h 744 def
+/cols 1 def
+%%EndSetup
+%%Page: (1) 1
+%%BeginPageSetup
+_S
+38 24 translate
+/pagenum 1 def
+/fname (dump.txt) def
+/fdir () def
+/ftail (dump.txt) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+5 643 M
+(   /| |\\     /| |\\     /| |\\     /| |\\     /| |\\     /| |\\     /| |\\     /| |\\) s
+5 632 M
+(   -----     -----     -----     -----     -----     -----     -----     -----) s
+5 621 M
+( /| | | |\\ /| | | |\\ /| | | |\\ /| | | |\\ /| | | |\\ /| | | |\\ /| | | |\\ /| | | |\\) s
+5 610 M
+( --------- --------- --------- --------- --------- --------- --------- ---------) s
+5 599 M
+( --------- --------- --------- --------- --------- --------- --------- ---------) s
+5 588 M
+( \\| | | |/ \\| | | |/ \\| | | |/ \\| | | |/ \\| | | |/ \\| | | |/ \\| | | |/ \\| | | |/) s
+5 577 M
+(   -----     -----     -----     -----     -----     -----     -----     -----) s
+5 566 M
+(   \\| |/     \\| |/     \\| |/     \\| |/     \\| |/     \\| |/     \\| |/     \\| |/) s
+5 544 M
+(   /| |\\     /| |\\     /| |\\     /| |\\     /| |\\     /| |\\     /| |\\     /| |\\) s
+5 533 M
+(   -----     -----     -----     -----     -----     -----     -----     -----) s
+5 522 M
+( /| | | |\\ /| | | |\\ /| | | |\\ /| | | |\\ /| | | |\\ /| | | |\\ /| | | |\\ /| | | |\\) s
+5 511 M
+( --------- --------- --------- --------- --------- --------- --------- ---------) s
+5 500 M
+( --------- --------- --------- --------- --------- --------- --------- ---------) s
+5 489 M
+( \\| | | |/ \\| | | |/ \\| | | |/ \\| | | |/ \\| | | |/ \\| | | |/ \\| | | |/ \\| | | |/) s
+5 478 M
+(   -----     -----     -----     -----     -----     -----     -----     -----) s
+5 467 M
+(   \\| |/     \\| |/     \\| |/     \\| |/     \\| |/     \\| |/     \\| |/     \\| |/) s
+5 423 M
+(                          1401 GENERAL PROGRAM LIBRARY) s
+5 401 M
+(                               Modified 1401 Dump) s
+5 379 M
+(                                     1.4.124) s
+5 335 M
+(   /| |\\     /| |\\     /| |\\     /| |\\     /| |\\     /| |\\     /| |\\     /| |\\) s
+5 324 M
+(   -----     -----     -----     -----     -----     -----     -----     -----) s
+5 313 M
+( /| | | |\\ /| | | |\\ /| | | |\\ /| | | |\\ /| | | |\\ /| | | |\\ /| | | |\\ /| | | |\\) s
+5 302 M
+( --------- --------- --------- --------- --------- --------- --------- ---------) s
+5 291 M
+( --------- --------- --------- --------- --------- --------- --------- ---------) s
+5 280 M
+( \\| | | |/ \\| | | |/ \\| | | |/ \\| | | |/ \\| | | |/ \\| | | |/ \\| | | |/ \\| | | |/) s
+5 269 M
+(   -----     -----     -----     -----     -----     -----     -----     -----) s
+5 258 M
+(   \\| |/     \\| |/     \\| |/     \\| |/     \\| |/     \\| |/     \\| |/     \\| |/) s
+5 236 M
+(   /| |\\     /| |\\     /| |\\     /| |\\     /| |\\     /| |\\     /| |\\     /| |\\) s
+5 225 M
+(   -----     -----     -----     -----     -----     -----     -----     -----) s
+5 214 M
+( /| | | |\\ /| | | |\\ /| | | |\\ /| | | |\\ /| | | |\\ /| | | |\\ /| | | |\\ /| | | |\\) s
+5 203 M
+( --------- --------- --------- --------- --------- --------- --------- ---------) s
+5 192 M
+( --------- --------- --------- --------- --------- --------- --------- ---------) s
+5 181 M
+( \\| | | |/ \\| | | |/ \\| | | |/ \\| | | |/ \\| | | |/ \\| | | |/ \\| | | |/ \\| | | |/) s
+5 170 M
+(   -----     -----     -----     -----     -----     -----     -----     -----) s
+5 159 M
+(   \\| |/     \\| |/     \\| |/     \\| |/     \\| |/     \\| |/     \\| |/     \\| |/) s
+_R
+S
+%%Page: (2) 2
+%%BeginPageSetup
+_S
+38 24 translate
+/pagenum 2 def
+/fname (dump.txt) def
+/fdir () def
+/ftail (dump.txt) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+5 489 M
+(                             DISCLAIMER) s
+5 478 M
+(                           ______________) s
+5 456 M
+(Although each program has been tested by its contributor, no) s
+5 445 M
+(warranty, express or implied, is made by the contributor, as) s
+5 434 M
+(to the accuracy or functioning of the program and related) s
+5 423 M
+(program material, nor shall the fact of distribution constitute) s
+5 412 M
+(any such warranty, and no responsibility is assumed by the) s
+5 401 M
+(contributor, in connection therewith.) s
+5 368 M
+(                     Notes from the Transcriber) s
+5 357 M
+(             \( Van Snyder -- van.snyder@jpl.nasa.gov \)) s
+5 346 M
+(             \(               1 May 2002              \)) s
+5 335 M
+(             \(              24 Apr 2010             \)) s
+5 313 M
+(The original cover page had a logo that looked something like what's) s
+5 302 M
+(on the previous page -- but it wasn't faked with ASCII.  The title) s
+5 291 M
+(was down the right side of the page, in landscape mode, not centered.) s
+5 269 M
+(ASCII Encoding is Pierce Primary \(A chain\) Encoding) s
+5 247 M
+(Card | Core  |     Core       |     1 2 3 4 5 6 7 8 9 0 Card Row Punch) s
+5 236 M
+(Zone | Units | Hundreds Zone  | Core Digit Bits     1 2 3 4 5 6 7) s
+5 225 M
+(Row  | Zone  | none  A  B  AB |   0 1 2 3 4 5 6 7 8 8 8 8 8 8 8 8) s
+5 214 M
+(=====|=======|================|===================================) s
+5 203 M
+(none | none  |    0  1  2   3 |     1 2 3 4 5 6 7 8 9 0 # @ : > {) s
+5 192 M
+(  0  |   A   |    4  5  6   7 |   ^ / S T U V W X Y Z | , % ~ \\ ") s
+5 181 M
+( 11  |   B   |    8  9 10  11 |   - J K L M N O P Q R ! $ * ] ; _) s
+5 170 M
+( 12  |  AB   |   12 13 14  15 |   & A B C D E F G H I ? . \) [ < }) s
+5 148 M
+(Word marks are added under each card image in the listing of the) s
+5 137 M
+(deck, to assist studying.  You'll need to remove the word mark lines) s
+5 126 M
+(in order to run the deck.  1 means a word mark in the read area.  2) s
+5 115 M
+(means a word mark that gets set where the text in the read area gets) s
+5 104 M
+(moved.  3 serves both purposes \(the word mark gets copied by an L) s
+5 93 M
+(instruction\).) s
+5 71 M
+(The program has been tested in SimH 3.8-1 \(http://simh.trailing-edge.com\).) s
+5 60 M
+(It appears to work.) s
+_R
+S
+%%Page: (3) 3
+%%BeginPageSetup
+_S
+38 24 translate
+/pagenum 3 def
+/fname (dump.txt) def
+/fdir () def
+/ftail (dump.txt) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+5 489 M
+(                            Modified 1401 Dump) s
+5 236 M
+(                                             William A. Delchamps) s
+5 225 M
+(                                             General Electric Company) s
+5 214 M
+(                                             Apollo Support Department) s
+5 203 M
+(                                             P.O. Box 294) s
+5 192 M
+(                                             Huntsville, Alabama) s
+5 170 M
+(Modifications or revisions of this program, as they occur,) s
+5 159 M
+(will be announced in the appropriate Catalog of Programs) s
+5 148 M
+(for IBM Data Processing Systems.  When such an announce-) s
+5 137 M
+(ment occurs, users should order a complete new program) s
+5 126 M
+(from the Program Information Department.) s
+_R
+S
+%%Page: (4) 4
+%%BeginPageSetup
+_S
+38 24 translate
+/pagenum 4 def
+/fname (dump.txt) def
+/fdir () def
+/ftail (dump.txt) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+5 467 M
+(                                 Deck Key) s
+5 445 M
+(                          1.  Program Deck - 24 Cards) s
+_R
+S
+%%Page: (5) 5
+%%BeginPageSetup
+_S
+38 24 translate
+/pagenum 5 def
+/fname (dump.txt) def
+/fdir () def
+/ftail (dump.txt) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+5 610 M
+(MODIFIED 1401 DUMP) s
+5 577 M
+(William A. Delchamps) s
+5 566 M
+(General Electric Company) s
+5 555 M
+(Apollo Support Department) s
+5 544 M
+(P.O. Box 294) s
+5 533 M
+(Huntsville, Alabama) s
+5 511 M
+(Purpose:  This routine is the standard IBM 1401 Dump modified to pro-) s
+5 500 M
+(vide the following additional conveniences:) s
+5 478 M
+(          1.  Logic indicators included in the printout.) s
+5 456 M
+(          2.  All Group Marks are changed to Lozenges.) s
+5 434 M
+(          3.  Blank blocks of memory \(x00-x99\) are not printed.) s
+5 412 M
+(Method:   Does not apply.) s
+5 379 M
+(Restrictions:  None.) s
+5 346 M
+(Storage Requirements:  Positions 1-80 initially and 81-399 after contents) s
+5 335 M
+(have been printed.) s
+5 302 M
+(Equipment Specifications:  Any model or size memory.) s
+_R
+S
+%%Page: (6) 6
+%%BeginPageSetup
+_S
+38 24 translate
+/pagenum 6 def
+/fname (dump.txt) def
+/fdir () def
+/ftail (dump.txt) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+5 621 M
+(                                 MODIFIED 1401 DUMP) s
+5 599 M
+(     This routine is the Standard IBM 1401 Dump Program modified to provide the) s
+5 588 M
+(following additional conveniences:) s
+5 566 M
+(          1.  Logic indicators are included in the printout.) s
+5 544 M
+(          2.  All Group Marks \(12-7-8\) are changed to lozenges \(12-4-8\).) s
+5 522 M
+(          3.  All memory blocks x00-x99 which are blank and do not contain Word) s
+5 511 M
+(              Marks are not printed.) s
+5 489 M
+(     The recommended procedure for dumping is as follows:) s
+5 467 M
+(          1.  Restore carriage.) s
+5 445 M
+(          2.  Record I address, A address, B address, Op register, instruction) s
+5 434 M
+(              length and 'd' character.) s
+5 412 M
+(          3.  Manually storage print 00 area.) s
+5 390 M
+(          4.  Place dump deck in reader and press card load.) s
+5 368 M
+(     The contents of memory above positions 400 are not modified by this routine and) s
+5 357 M
+(program operation may be resumed after dumping if previous contents of 000-399 are) s
+5 346 M
+(not critical.) s
+5 324 M
+(     This routine consists of 24 self-loading cards which must be in their proper) s
+5 313 M
+(sequence.  The basic deck will dump for a 1.4K machine; however, alterations for) s
+5 302 M
+(other size memory are as follows:) s
+5 280 M
+(          1.  Different memory size:) s
+5 258 M
+(              Card 22 columns 56-60 is memory size, 01400, 02000, etc.) s
+5 236 M
+(          2.  Over 4K memory requires Modify Address instruction, replacing add:) s
+5 214 M
+(              Card 16, column 72, punch #.) s
+5 192 M
+(              Card 21, column 70, punch #.) s
+5 170 M
+(              Card 23, column 49, punch #.) s
+5 148 M
+(     This routine has been thoroughly tested on a 4K machine with both modulus 4) s
+5 137 M
+(and 16 addressing for all three memory sizes and on a 16K machine with modulus 16) s
+5 126 M
+(addressing for all six memory sizes.) s
+5 104 M
+(     If another utility routine is to follow the dump, such as a tape print: change) s
+5 93 M
+(card 22 column 53 to a / and discard card 24.  This will clear 0-80, set a word) s
+5 82 M
+(mark at 1, read card replacing card 24 and branch to 1.) s
+_R
+S
+%%Page: (7) 7
+%%BeginPageSetup
+_S
+38 24 translate
+/pagenum 7 def
+/fname (dump.txt) def
+/fdir () def
+/ftail (dump.txt) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+5 632 M
+(                                 MODIFIED 1401 DUMP) s
+5 610 M
+(,008015,023030N0000000,038042N0000000,049,053057,059,063N0,067,0711001) s
+5 599 M
+(1      1      1       1      1       1   1      1   1   1 1   1   1   1) s
+5 588 M
+(M055021M055048B042XXX}A067055B0570534B001M071XXXB023081 FK/059,0011001\)) s
+5 577 M
+(1      1      1       1      1       1   1      1   1   1 1   1   1   1) s
+5 566 M
+(,008012,016,023,030034,041048,049,056063,022072,,074076,080067\)023,02922\)N01012N) s
+5 555 M
+(1      1   1   1      1      1   1      1      11      1      1   1   11 1 1   1) s
+5 544 M
+(.......210 /332N0000NL010210L\)048A077010B0673300A077028L002332B022\)0292N0FJ1012) s
+5 533 M
+(1      1   1   1    11      11   1      1       1      1      1   1   11 1 1   1) s
+5 522 M
+(M080067B034,017N/332NV0011011,101L101201B0670383A076037A076040B034\)20122\)N01012N) s
+5 511 M
+(1      1   1   11   11       1   1      1       1      1      1   1   11 1 1   1) s
+5 500 M
+(.......110 /300N,029NL010210LN000A077010B0673000A077028N000000B022\)0292N0FJ1017N) s
+5 489 M
+(1      1   1   11   11      11   1      1       1      1      1   1   11 1 1   1) s
+5 478 M
+(M080067B034     /300/V0010811,081L081281B0670383A076037A076040B034\)28122\)N01030N) s
+5 467 M
+(1      1   1   11   11       1   1      1       1      1      1   1   11 1 1   1) s
+5 456 M
+(......*1*..*2*..*3*.         ,048\)008012\)022017\)L020300,0230161049) s
+5 445 M
+(1              1      1      1   1      1      11      1      1   1   11 1 1   1) s
+5 434 M
+(SENSE SWS   ON               OFF                L014214L032234\)074\)067N,0111011) s
+5 423 M
+(1              1      1      1   1      1      11      1      1   1   11   1   1) s
+5 412 M
+(2         B034BM080236A001022B049M080216A001040NA076015A076080B076080HNB0111034B) s
+5 401 M
+(1         1    1      1      1   1      1      11      1      1       11   1   1) s
+5 390 M
+(   UNEQUALEQUAL HIGH  LOW        L010110L015115NL020120L025125N0000000NN0001011) s
+5 379 M
+(1         1    1      1      1   1      1      11      1      1       11   1   1) s
+5 368 M
+(5003      B041/N000000N000000B049       M110256NA076015A004047B076015VNB0111011) s
+5 357 M
+(1         1    1      1      1   1      1      11      1      1       11   1   1) s
+5 346 M
+(OVFLO OFF B041ZN 00000N000000B049       M017009NM009277N000000N0000000NN0001034) s
+5 335 M
+(1         1    1      1      1   1      1      11      1      1       11   1   1) s
+5 324 M
+(/299/080,0011001                 ,067074\)011016\)L016116,117113,109,1052FLFKB101) s
+5 313 M
+(3   2   2   2   2     1      1   1      1      11      1      1   1   11 1 1   1) s
+5 302 M
+(,008015,022023,027031N,038,042L0782001001\)078N080,0011001........4900333-AREA ) s
+5 291 M
+(1      1      1      11   1   1      1   3   2   2   2   2       2 2) s
+5 280 M
+(L080163,190188,156156,,180,176,1721681001\)2A2B1410!0}B148M1252A2A176099AB1060970) s
+5 269 M
+(1      1      1      11   1   1      1   3   2       2   2      2      22     ) s
+5 258 M
+(L079124,148141,101106,,137,129,1171101001X00FF333010332/332/,2A2M0!02A2V1290!01) s
+5 247 M
+(1      1      1      11   1   1      1   3  2 2  2    22   22   2      2) s
+5 236 M
+(,045049,056060L068086N\)042\)027,095092,0900831001              1/B168) s
+5 225 M
+(1      1      1      11   1   1      1      1   1      1   1    2            1) s
+5 214 M
+(Z200211M071194L189261LB0491889A176188A176020B015L066251B100.....3900400) s
+5 203 M
+(1      1      1      11       1      1      1   1      1   1                 1) s
+5 192 M
+(\)056060L080364,340347NN0000000,354358\)0310311001D173188D014019M094089,323C0|9332) s
+5 181 M
+(1      1      1      11       1      1      1   3      2      2      2   2    ) s
+5 170 M
+(L080396,030056,370378N,386393N0000000,0780781001B100/V1000|01B0490889A097089B358) s
+5 159 M
+(1      1      1      11      1       1      1   3    2       2       2      2 ) s
+5 148 M
+(,060062,064071M053168MD173188N0000000L05839911642060N  01400  CORE SIZE) s
+5 137 M
+(1      1      1      11      1       1      1   1      1   1 1 1      1      1) s
+5 126 M
+(Z200211A176192L189221LA176020B3331889A176188B015A178094B0712\)FJD173097C399192B00) s
+5 115 M
+(1      1      1      11      1       1      1   1      1   1 1 1      1      1) s
+5 104 M
+(,031054\)060071,036064,\)062078N/332/N0L080213,068B063AN0M0912142.064SENSE SW A ON) s
+5 93 M
+(1      1      1      11      11   11 1      1   1    1 1      11   1          ) s
+_R
+S
+%%Page: (8) 8
+%%BeginPageSetup
+_S
+38 24 translate
+/pagenum 8 def
+/fname (dump.txt) def
+/fdir () def
+/ftail (dump.txt) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+5 709 M
+(                       ANNOTATED MODIFIED 1401 DUMP) s
+5 687 M
+(Notes provided by Van Snyder \(van.snyder@jpl.nasa.gov\) 30 April 2002.) s
+5 665 M
+(================================================================================) s
+5 643 M
+(1.  Set word marks for the next card.) s
+5 621 M
+(....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80) s
+5 610 M
+(,008015,023030N0000000,038042N0000000,049,053057,059,063N0,067,0711001) s
+5 599 M
+(1      1      1       1      1       1   1      1   1   1 1   1   1   1) s
+5 577 M
+(2.  Replace group marks in 81-399 by \).) s
+5 555 M
+(....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80) s
+5 544 M
+(M055021M055048B042XXX}A067055B0570534B001M071XXXB023081 FK/059,0011001\)) s
+5 533 M
+(1      1      1       1      1       1   1      1   1   1 1   1   1   1) s
+5 511 M
+(3.  Set word marks for the next card, print the 201-332 area, then print the) s
+5 500 M
+(word marks.) s
+5 478 M
+(....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80) s
+5 467 M
+(,008012,016,023,030034,041048,049,056063,022072,,074076,080067\)023,02922\)N01012N) s
+5 456 M
+(1      1   1   1      1      1   1      1      11      1      1   1   11 1 1   1) s
+5 434 M
+(4.  Clear 300-332 to make sure 330 isn't a zero.  Fill in the dots and numbers) s
+5 423 M
+(210-330, print them.) s
+5 401 M
+(....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80) s
+5 390 M
+(.......210 /332N0000NL010210L\)048A077010B0673300A077028L002332B022\)0292N0FJ1012) s
+5 379 M
+(1      1   1   1    11      11   1      1       1      1      1   1   11 1 1   1) s
+5 357 M
+(5.  Clear 300-332. Remember whether 101 had a word mark.  Set one.  Load) s
+5 346 M
+(101-200 and its word marks to 201-300.  Clear \(or don't clear\) the word mark in) s
+5 335 M
+(201. Print.  Print word marks.) s
+5 313 M
+(....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80) s
+5 302 M
+(M080067B034,017N/332NV0011011,101L101201B0670383A076037A076040B034\)20122\)N01012N) s
+5 291 M
+(1      1   1   11   11       1   1      1       1      1      1   1   11 1 1   1) s
+5 269 M
+(6.  Clear 300 to make sure it isn't zero.  Fill in the dots and numbers) s
+5 258 M
+(110-200.  Print them.) s
+5 236 M
+(....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80) s
+5 225 M
+(.......110 /300N,029NL010210LN000A077010B0673000A077028N000000B022\)0292N0FJ1017N) s
+5 214 M
+(1      1   1   11   11      11   1      1       1      1      1   1   11 1 1   1) s
+5 192 M
+(7.  Clear 300.  Remember whether 81 had a word mark.  Set one.  Load 81-99 and) s
+5 181 M
+(its word marks to 281-299.  Clear \(or don't clear\) the word mark in 281. ) s
+5 170 M
+(Print. Print word marks.) s
+5 148 M
+(....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80) s
+5 137 M
+(M080067B034     /300/V0010811,081L081281B0670383A076037A076040B034\)28122\)N01030N) s
+5 126 M
+(1      1   1   11   11       1   1      1       1      1      1   1   11 1 1   1) s
+5 104 M
+(8.  Load index register identification to 281-300.) s
+5 82 M
+(....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80) s
+5 71 M
+(......*1*..*2*..*3*.         ,048\)008012\)022017\)L020300,0230161049) s
+5 60 M
+(1                     1      1   1      1      11      1      1   1   11 1 1   1) s
+_R
+S
+%%Page: (9) 9
+%%BeginPageSetup
+_S
+38 24 translate
+/pagenum 9 def
+/fname (dump.txt) def
+/fdir () def
+/ftail (dump.txt) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+5 720 M
+(9.  Load sense switch identifiers to 201-234.) s
+5 698 M
+(....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80) s
+5 687 M
+(SENSE SWS   ON               OFF                L014214L032234\)074\)067N,0111011) s
+5 676 M
+(1              1      1      1   1      1      11      1      1   1   11   1   1) s
+5 654 M
+(10. Put list of on and off sense switches in 236... \(on\) or 216... \(off\).) s
+5 632 M
+(....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80) s
+5 621 M
+(2         B034BM080236A001022B049M080216A001040NA076015A076080B076080HNB0111034B) s
+5 610 M
+(1         1    1      1      1   1      1      11      1      1       11   1   1) s
+5 588 M
+(11. Save comparison indicators in 100..125.) s
+5 566 M
+(....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80) s
+5 555 M
+(   UNEQUALEQUAL HIGH  LOW        L010110L015115NL020120L025125N0000000NN0001011) s
+5 544 M
+(1         1    1      1      1   1      1      11      1      1       11   1   1) s
+5 522 M
+(12. Move appropriate comparison indicators to 247..265.) s
+5 500 M
+(....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80) s
+5 489 M
+(5003      B041/N000000N000000B049       M110256NA076015A004047B076015VNB0111011) s
+5 478 M
+(1         1    1      1      1   1      1      11      1      1       11   1   1) s
+5 456 M
+(13. Construct overflow off \(or on\) indicator.  Move it to 268..277.) s
+5 434 M
+(....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80) s
+5 423 M
+(OVFLO OFF B041ZN 00000N000000B049       M017009NM009277N000000N0000000NN0001034) s
+5 412 M
+(1         1    1      1      1   1      1      11      1      1       11   1   1) s
+5 390 M
+(14. Move clear routines for 200-299 and 0-80 to 101-116.  Print indicators.) s
+5 379 M
+(Clear 200-299 and 0-80.  Set word mark in 1, read a card and branch to 1.) s
+5 357 M
+(....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80) s
+5 346 M
+(/299/080,0011001                 ,067074\)011016\)L016116,117113,109,1052FLFKB101) s
+5 335 M
+(1                     1      1   1      1      11      1      1   1   11 1 1   1) s
+5 313 M
+(15. Set word marks, move some code to 164-200.) s
+5 302 M
+(                                         ....170.......180.......190.......200) s
+5 291 M
+(....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80) s
+5 280 M
+(,008015,022023,027031N,038,042L0782001001\)078N080,0011001........4900333-AREA ) s
+5 269 M
+(1      1      1      11   1   1      1   1) s
+5 247 M
+(16. Move some code to 125-163, set some word marks.) s
+5 236 M
+(                                         ...130.......140.......150.......160...) s
+5 225 M
+(....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80) s
+5 214 M
+(L080163,190188,156156,,180,176,1721681001\)2A2B1410!0}B148M1252A2A176099AB1060970) s
+5 203 M
+(1      1      1      11   1   1      1   1) s
+5 181 M
+(17. Move some code to 87-124, set some word marks.) s
+5 170 M
+(                                         ..90.......100.......110.......120....) s
+5 159 M
+(....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80) s
+5 148 M
+(L079124,148141,101106,,137,129,1171101001X00FF333010332/332/,2A2M0!02A2V1290!01) s
+5 137 M
+(1      1      1      11   1   1      1   1) s
+5 115 M
+(18. Set some word marks, move some code to 78-86 \(actually part of an) s
+5 104 M
+(instruction\)) s
+5 93 M
+(                                                           .80...85.) s
+5 82 M
+(....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80) s
+5 71 M
+(,045049,056060L068086N\)042\)027,095092,0900831001              1/B168) s
+5 60 M
+(1      1      1      11   1   1      1      1   1      1   1                 1) s
+_R
+S
+%%Page: (10) 10
+%%BeginPageSetup
+_S
+38 24 translate
+/pagenum 10 def
+/fname (dump.txt) def
+/fdir () def
+/ftail (dump.txt) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+5 720 M
+(19. Move "00333-AREA " with zero suppression to 201-211.  Update "xxxxx-AREA ") s
+5 709 M
+(to 00400.  Put .....39 - ........99 in print area.  Go to print it and to) s
+5 698 M
+(set up to print 333-399 area.) s
+5 687 M
+(                                                           .....190....) s
+5 676 M
+(....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80) s
+5 665 M
+(Z200211M071194L189261LB0491889A176188A176020B015L066251B100.....3900400) s
+5 654 M
+(1      1      1      11       1      1      1   1      1   1                 1) s
+5 632 M
+(20. Move some code to 333-364.  Set some word marks.) s
+5 621 M
+(                                                .....340.......350.......360....) s
+5 610 M
+(....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80) s
+5 599 M
+(\)056060L080364,340347NN0000000,354358\)0310311001D173188D014019M094089,323C0|9332) s
+5 588 M
+(1      1      1      11       1      1      1   1) s
+5 566 M
+(21. Move some code to 365-396.  Set some word marks.) s
+5 555 M
+(                                                ...370.......380.......390......) s
+5 544 M
+(....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80) s
+5 533 M
+(L080396,030056,370378N,386393N0000000,0780781001B100/V1000|01B0490889A097089B358) s
+5 522 M
+(1      1      1      11      1       1      1   1) s
+5 500 M
+(22. Set some word marks.  Change \)078N to 2060N at 164-168) s
+5 489 M
+(Change first ........x9 to ........09.  Move the core size to 396-399.) s
+5 478 M
+(                                                .....  ...) s
+5 467 M
+(....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80) s
+5 456 M
+(,060062,064071M053168MD173188N0000000L05839911642060N  01400  CORE SIZE) s
+5 445 M
+(1      1      1      11      1       1      1   1      1   1 1 1      1      1) s
+5 423 M
+(23. Move "xxxxx-AREA " with zero supression to 201-211.  Update xxxxx by 100.) s
+5 412 M
+(Put ........09 - ........99 to 212-311.  Go put data and word marks in the) s
+5 401 M
+(print area and print the data.  Print the word marks on return.) s
+5 379 M
+(....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80) s
+5 368 M
+(Z200211A176192L189221LA176020B3331889A176188B015A178094B0712\)FJD173097C399192B00) s
+5 357 M
+(1      1      1      11      1       1      1   1      1   1 1 1      1      1) s
+5 335 M
+(24. Print whether Sense switch A is on.) s
+5 313 M
+(....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80) s
+5 302 M
+(,031054\)060071,036064,\)062078N/332/N0L080213,068B063AN0M0912142.064SENSE SW A ON) s
+5 291 M
+(1      1      1      11      11   11 1      1   1    1 1      11   1          ) s
+5 269 M
+(================================================================================) s
+5 247 M
+(Alternate \(untested\) two-card sequence for cards 12-14) s
+5 225 M
+(12. Move appropriate comparison indicators to 247..265.) s
+5 214 M
+(Load 'Read a card and branch to 1' to 89-92) s
+5 192 M
+(....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80) s
+5 181 M
+(5003      B041/L033092B049   1001       M110256NA076015A004047B076015VNB0111011) s
+5 170 M
+(1         1    1      1      1   1      1      11      1      1       11   1   1) s
+5 148 M
+(13. Construct overflow off \(or on\) indicator.  Move it to 268..277.) s
+5 137 M
+(Move clear routine 0-80 to 81-88.  Set word marks for it.  Print indicators.) s
+5 126 M
+(Clear 200-299 and 0-80.  Set word mark in 1, read a card and branch to 1.) s
+5 104 M
+(....5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80) s
+5 93 M
+(OVFLO ON  B023ZM057009M009277,074L070088,085093NB071   FF     /080,0012FLFK/299N) s
+5 82 M
+(1         1    1      1      1   1      1      11      1      1       11 1 1   1) s
+_R
+S
+%%Trailer
+%%Pages: 10
+%%DocumentNeededResources: font Courier-Bold Courier 
+%%EOF
